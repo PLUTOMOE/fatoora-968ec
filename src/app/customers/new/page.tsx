@@ -1,13 +1,13 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useState, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useStore } from '@/store/useStore';
 import { createCustomer } from '@/lib/supabase/services';
 import { createClient } from '@/lib/supabase/client';
 import { UserPlus, MapPin, ChevronDown, Phone, Mail, Check, Sparkles, Upload, Loader2, CheckCircle2, Building2 } from 'lucide-react';
 
-export default function NewCustomerPage() {
+function NewCustomerContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const prefillName = searchParams.get('name') || '';
@@ -328,5 +328,13 @@ export default function NewCustomerPage() {
         )}
       </main>
     </div>
+  );
+}
+
+export default function NewCustomerPage() {
+  return (
+    <Suspense fallback={<div className="p-8 text-center text-muted-foreground w-full flex justify-center"><Loader2 className="w-8 h-8 animate-spin" /></div>}>
+      <NewCustomerContent />
+    </Suspense>
   );
 }

@@ -61,13 +61,15 @@ function InvoiceFormContent() {
     const newCustomerStr = searchParams.get('newCustomerData');
     if (newCustomerStr) {
       try {
-        const cData = JSON.parse(decodeURIComponent(newCustomerStr));
+        const cData = JSON.parse(newCustomerStr);
         setCustomerInfo({
           name: cData.name || '',
           tax_number: cData.tax_number || '',
           address: cData.address || ''
         });
-      } catch (e) {}
+      } catch (e) {
+        console.error("Failed to parse returned customer data: ", e);
+      }
     }
 
   }, [searchParams]);
