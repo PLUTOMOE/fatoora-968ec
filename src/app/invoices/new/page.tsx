@@ -7,9 +7,11 @@ import { ClassicTemplate } from '@/components/invoice-templates/ClassicTemplate'
 import { ModernTemplate } from '@/components/invoice-templates/ModernTemplate';
 import { MinimalTemplate } from '@/components/invoice-templates/MinimalTemplate';
 import { EliteTemplate } from '@/components/invoice-templates/EliteTemplate';
+import { useStore } from '@/store/useStore';
 
 export default function NewInvoicePage() {
   const router = useRouter();
+  const { language } = useStore();
   const [settings, setSettings] = useState<any>({
     template: 'elite',
     logo_url: '',
@@ -60,7 +62,8 @@ export default function NewInvoicePage() {
       notes: settings.default_notes,
       template: settings.template
     },
-    type: 'invoice' as const
+    type: 'invoice' as const,
+    language
   };
 
   const renderTemplate = () => {

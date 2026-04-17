@@ -32,7 +32,8 @@ export interface InvoiceTemplateProps {
     stamp_url?: string;
     signature_url?: string;
     notes?: string;
-    template: 'classic' | 'modern' | 'minimal';
+    template: 'classic' | 'modern' | 'minimal' | 'elite';
   };
   type: 'invoice' | 'quotation';
+  language?: 'ar' | 'en';
 }
