@@ -1,7 +1,7 @@
 "use client";
 
-import React, { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import React, { useState, useEffect, Suspense } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { ChevronRight, Save, LayoutTemplate, Eye, X, ArrowRight, Printer, Plus, Trash2, GripVertical } from 'lucide-react';
 import { CustomerAutocomplete, CustomerData } from '@/components/ui/CustomerAutocomplete';
 import { ClassicTemplate } from '@/components/invoice-templates/ClassicTemplate';
@@ -17,8 +17,9 @@ interface InvoiceItem {
   tax_rate: number;
 }
 
-export default function NewQuotationPage() {
+function QuotationFormContent() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [showPreview, setShowPreview] = useState(false);
   const [settings, setSettings] = useState<any>({
     template: 'elite',
@@ -36,11 +37,39 @@ export default function NewQuotationPage() {
   ]);
 
   useEffect(() => {
+    // Load general settings
     const stored = localStorage.getItem('invoice_settings');
     if (stored) {
       try { setSettings(JSON.parse(stored)); } catch {}
     }
-  }, []);
+
+    // Load Draft if returning from Customer Creation
+    const draft = localStorage.getItem('quotation_draft_state');
+    if (draft) {
+      try {
+        const parsed = JSON.parse(draft);
+        if (parsed.items) setItems(parsed.items);
+        if (parsed.invoiceDates) setInvoiceDates(parsed.invoiceDates);
+        localStorage.removeItem('quotation_draft_state'); // Clear draft
+      } catch (e) {
+        console.error("Error loading draft", e);
+      }
+    }
+
+    // Load New Customer if redirected back
+    const newCustomerStr = searchParams.get('newCustomerData');
+    if (newCustomerStr) {
+      try {
+        const cData = JSON.parse(decodeURIComponent(newCustomerStr));
+        setCustomerInfo({
+          name: cData.name || '',
+          tax_number: cData.tax_number || '',
+          address: cData.address || ''
+        });
+      } catch (e) {}
+    }
+
+  }, [searchParams]);
 
   const handleAddItem = () => {
     setItems([...items, { name: '', description: '', qty: 1, price: 0, tax_rate: 15 }]);
@@ -203,6 +232,11 @@ export default function NewQuotationPage() {
                   }
                 }}
                 onOpenCreateNew={(nameQuery) => {
+                  const stateToSave = {
+                    items,
+                    invoiceDates,
+                  };
+                  localStorage.setItem('quotation_draft_state', JSON.stringify(stateToSave));
                   router.push(`/customers/new?name=${encodeURIComponent(nameQuery)}&callback=/quotations/new`);
                 }}
               />
@@ -358,5 +392,13 @@ export default function NewQuotationPage() {
 
       </div>
     </div>
+  );
+}
+
+export default function NewQuotationPage() {
+  return (
+    <Suspense fallback={<div className="p-8 text-center text-muted-foreground">جاري التحميل...</div>}>
+      <QuotationFormContent />
+    </Suspense>
   );
 }

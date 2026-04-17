@@ -80,7 +80,17 @@ export default function NewCustomerPage() {
         entity_id: ent.id,
       });
 
-      router.push(redirectCallback);
+      if (redirectCallback !== '/customers') {
+        const customerPayload = encodeURIComponent(JSON.stringify({
+          name: formData.name,
+          tax_number: formData.tax_number,
+          address: formData.city
+        }));
+        router.push(`${redirectCallback}?newCustomerData=${customerPayload}`);
+      } else {
+        router.push(redirectCallback);
+      }
+      
     } catch (err) {
       console.error(err);
       alert('حدث خطأ أثناء حفظ العميل');
