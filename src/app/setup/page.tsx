@@ -289,8 +289,11 @@ export default function SetupPage() {
             <div className="flex justify-end items-center gap-4">
               <button 
                 type="button"
-                onClick={() => router.push('/')}
-                className="px-6 py-3 rounded-xl text-sm text-[#585c80] dark:text-[#a0a0b8] hover:bg-[#e6e8ea] dark:hover:bg-[#1e1e1e] transition-colors font-medium"
+                onClick={() => {
+                  localStorage.setItem('setup_skipped', 'true');
+                  router.push('/');
+                }}
+                className="px-6 py-3 rounded-xl text-sm text-[#585c80] dark:text-[#a0a0b8] hover:bg-[#e6e8ea] dark:hover:bg-[#252540] transition-colors font-medium"
               >
                 تخطي الآن
               </button>
