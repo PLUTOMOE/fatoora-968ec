@@ -1,6 +1,9 @@
 "use client";
 
 import React, { useState, useEffect } from 'react';
+import { CustomerAutocomplete, CustomerData } from '@/components/ui/CustomerAutocomplete';
+import { QuickAddCustomerModal } from '@/components/ui/QuickAddCustomerModal';
+
 import { useRouter } from 'next/navigation';
 import { ChevronRight, Save, LayoutTemplate, Eye, X, ArrowRight, Printer, Plus, Trash2, GripVertical } from 'lucide-react';
 import { ClassicTemplate } from '@/components/invoice-templates/ClassicTemplate';
@@ -28,12 +31,16 @@ export default function NewInvoicePage() {
     default_notes: ''
   });
 
-  // Invoice Data States
+  // Quotation Data States
   const [customerInfo, setCustomerInfo] = useState({ name: '', tax_number: '', address: '' });
   const [invoiceDates, setInvoiceDates] = useState({ date: new Date().toISOString().split('T')[0], due_date: '' });
   const [items, setItems] = useState<InvoiceItem[]>([
     { name: '', description: '', qty: 1, price: 0, tax_rate: 15 }
   ]);
+
+  // Modal State
+  const [showAddCustomerModal, setShowAddCustomerModal] = useState(false);
+  const [newCustomerNameQuery, setNewCustomerNameQuery] = useState('');
 
   useEffect(() => {
     const stored = localStorage.getItem('invoice_settings');
@@ -189,12 +196,23 @@ export default function NewInvoicePage() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             <div className="lg:col-span-2 space-y-1.5">
               <label className="text-xs font-semibold text-muted-foreground">اسم العميل (مطلوب)</label>
-              <input 
-                type="text" 
+              <CustomerAutocomplete
                 value={customerInfo.name}
-                onChange={(e) => setCustomerInfo({...customerInfo, name: e.target.value})}
-                placeholder="ابحث أو أدخل اسم جديد..." 
-                className="w-full bg-background border border-border rounded-lg px-4 py-2.5 text-sm outline-none focus:border-primary" 
+                onChange={(customer, rawName) => {
+                  if (customer) {
+                    setCustomerInfo({
+                      name: customer.name,
+                      tax_number: customer.tax_number || '',
+                      address: customer.address || ''
+                    });
+                  } else {
+                    setCustomerInfo(prev => ({ ...prev, name: rawName }));
+                  }
+                }}
+                onOpenCreateNew={(nameQuery) => {
+                  setNewCustomerNameQuery(nameQuery);
+                  setShowAddCustomerModal(true);
+                }}
               />
             </div>
             <div className="space-y-1.5">
@@ -347,6 +365,20 @@ export default function NewInvoicePage() {
         </div>
 
       </div>
+
+      <QuickAddCustomerModal 
+        isOpen={showAddCustomerModal}
+        onClose={() => setShowAddCustomerModal(false)}
+        initialName={newCustomerNameQuery}
+        onSuccess={(customer) => {
+          setCustomerInfo({
+            name: customer.name,
+            tax_number: customer.tax_number || '',
+            address: customer.address || ''
+          });
+          setShowAddCustomerModal(false);
+        }}
+      />
     </div>
   );
 }
