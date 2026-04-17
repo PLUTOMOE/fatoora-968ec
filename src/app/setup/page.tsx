@@ -119,12 +119,12 @@ export default function SetupPage() {
     error?: string; required?: boolean;
   }) => (
     <div className="space-y-2">
-      <label htmlFor={id} className="text-sm font-semibold text-[#191c1e] dark:text-[#d0d0d0] flex items-center gap-1.5">
+      <label htmlFor={id} className="text-sm font-semibold text-[#191c1e] dark:text-[#e8e8f0] flex items-center gap-1.5">
         {label}
-        {!required && <span className="text-xs text-[#767683] dark:text-[#666] font-normal">(اختياري)</span>}
+        {!required && <span className="text-xs text-[#767683] dark:text-[#9090a8] font-normal">(اختياري)</span>}
       </label>
       <div className="relative">
-        {Icon && <Icon className="absolute right-3.5 top-3.5 w-4 h-4 text-[#767683] dark:text-[#555] pointer-events-none" />}
+        {Icon && <Icon className="absolute right-3.5 top-3.5 w-4 h-4 text-[#767683] dark:text-[#8888a0] pointer-events-none" />}
         <input
           id={id}
           type={type}
@@ -132,11 +132,11 @@ export default function SetupPage() {
           value={value}
           onChange={e => onChange(e.target.value)}
           placeholder={placeholder}
-          className={`w-full bg-[#e0e3e5] dark:bg-[#252525] border-0 rounded-lg ${Icon ? 'pr-10' : 'pr-4'} pl-4 py-3 text-[#191c1e] dark:text-[#e0e0e0] text-base placeholder:text-[#767683] dark:placeholder:text-[#555] focus:ring-2 focus:ring-[#000666]/20 dark:focus:ring-[#7b8fff]/30 focus:outline-none transition-all ${error ? 'ring-2 ring-red-400' : ''}`}
+          className={`w-full bg-[#e0e3e5] dark:bg-[#2a2a40] border-0 rounded-lg ${Icon ? 'pr-10' : 'pr-4'} pl-4 py-3 text-[#191c1e] dark:text-[#f0f0f5] text-base placeholder:text-[#767683] dark:placeholder:text-[#8888a0] focus:ring-2 focus:ring-[#000666]/20 dark:focus:ring-[#7b8fff]/30 focus:outline-none transition-all ${error ? 'ring-2 ring-red-400' : ''}`}
         />
       </div>
       {error && <p className="text-xs text-red-500 dark:text-red-400 flex items-center gap-1">⚠ {error}</p>}
-      {hint && !error && <p className="text-xs text-[#767683] dark:text-[#666]">{hint}</p>}
+      {hint && !error && <p className="text-xs text-[#767683] dark:text-[#9090a8]">{hint}</p>}
     </div>
   );
 
@@ -148,18 +148,18 @@ export default function SetupPage() {
   ];
 
   return (
-    <div className="min-h-screen bg-[#f8f9fb] dark:bg-[#0d0d0d] text-[#191c1e] dark:text-[#e8e8e8] font-sans flex" dir="rtl">
+    <div className="min-h-screen bg-[#f8f9fb] dark:bg-[#141420] text-[#191c1e] dark:text-[#f2f2f8] font-sans flex" dir="rtl">
       
       {/* Sidebar */}
-      <aside className="hidden md:flex flex-col fixed right-0 top-0 h-screen w-72 pt-16 pb-8 bg-[#f2f4f6] dark:bg-[#121212] z-40 border-l border-[#e0e3e5] dark:border-[#2a2a2a]">
+      <aside className="hidden md:flex flex-col fixed right-0 top-0 h-screen w-72 pt-16 pb-8 bg-[#f2f4f6] dark:bg-[#1a1a2e] z-40 border-l border-[#e0e3e5] dark:border-[#3a3a55]">
         <div className="px-8 mb-12">
           <div className="flex items-center gap-4">
-            <div className="w-12 h-12 rounded-xl bg-[#e0e3e5] dark:bg-[#2a2a2a] flex items-center justify-center">
+            <div className="w-12 h-12 rounded-xl bg-[#e0e3e5] dark:bg-[#303050] flex items-center justify-center">
               <Building2 className="w-6 h-6 text-[#000666] dark:text-[#7b8fff]" />
             </div>
             <div>
               <h2 className="font-bold text-lg text-[#000666] dark:text-[#7b8fff]">فاتورة</h2>
-              <p className="text-sm text-[#585c80] dark:text-[#888]">مرحلة الإعداد</p>
+              <p className="text-sm text-[#585c80] dark:text-[#a0a0b8]">مرحلة الإعداد</p>
             </div>
           </div>
         </div>
@@ -167,12 +167,12 @@ export default function SetupPage() {
           {sidebarItems.map((item, i) => {
             const Icon = item.icon;
             return item.active ? (
-              <div key={i} className="flex items-center gap-4 px-4 py-3 bg-white dark:bg-[#1e1e1e] text-[#000666] dark:text-[#7b8fff] font-bold border-r-4 border-[#000666] dark:border-[#7b8fff] shadow-sm rounded-l-lg">
+              <div key={i} className="flex items-center gap-4 px-4 py-3 bg-white dark:bg-[#252540] text-[#000666] dark:text-[#7b8fff] font-bold border-r-4 border-[#000666] dark:border-[#7b8fff] shadow-sm rounded-l-lg">
                 <Icon className="w-5 h-5 flex-shrink-0" />
                 <span className="text-sm">{item.label}</span>
               </div>
             ) : (
-              <div key={i} className="flex items-center gap-4 px-4 py-3 text-[#585c80] dark:text-[#555] rounded-lg opacity-50 cursor-not-allowed select-none">
+              <div key={i} className="flex items-center gap-4 px-4 py-3 text-[#585c80] dark:text-[#8888a0] rounded-lg opacity-50 cursor-not-allowed select-none">
                 <Icon className="w-5 h-5 flex-shrink-0" />
                 <span className="text-sm">{item.label}</span>
               </div>
@@ -182,7 +182,7 @@ export default function SetupPage() {
         <div className="px-8 mt-auto space-y-2">
           <button
             onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
-            className="w-full py-2.5 px-4 rounded-lg text-sm text-[#585c80] dark:text-[#888] hover:bg-[#e6e8ea] dark:hover:bg-[#1e1e1e] transition-colors flex items-center justify-center gap-2"
+            className="w-full py-2.5 px-4 rounded-lg text-sm text-[#585c80] dark:text-[#a0a0b8] hover:bg-[#e6e8ea] dark:hover:bg-[#1e1e1e] transition-colors flex items-center justify-center gap-2"
           >
             {theme === 'dark' ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
             <span>{theme === 'dark' ? 'الوضع الفاتح' : 'الوضع الداكن'}</span>
@@ -207,23 +207,23 @@ export default function SetupPage() {
         <div className="max-w-2xl">
           {/* Header */}
           <div className="mb-10">
-            <span className="inline-block px-3 py-1 bg-[#d2d4ff] dark:bg-[#2a2a4a] text-[#585c80] dark:text-[#9999ff] rounded-full text-xs font-semibold mb-4 tracking-wide">
+            <span className="inline-block px-3 py-1 bg-[#d2d4ff] dark:bg-[#2e2e52] text-[#585c80] dark:text-[#b0b0ff] rounded-full text-xs font-semibold mb-4 tracking-wide">
               خطوة ١ من ٤
             </span>
             <h1 className="font-black text-4xl text-[#191c1e] mb-3 leading-tight tracking-tight">
               {t('pages_extra.setup.title')}
             </h1>
-            <p className="text-[#585c80] dark:text-[#999] text-base leading-relaxed">
+            <p className="text-[#585c80] dark:text-[#b0b0c8] text-base leading-relaxed">
               البيانات اختيارية — يمكن إكمالها لاحقاً. لكن إذا أدخلتها يجب أن تكون بالصيغة الرسمية المعتمدة.
             </p>
           </div>
 
           <form onSubmit={handleCreateCompany}>
             {/* Card 1: Basic Info */}
-            <div className="bg-white dark:bg-[#181818] rounded-2xl shadow-[0_8px_30px_rgba(25,28,30,0.05)] dark:shadow-[0_8px_30px_rgba(0,0,0,0.3)] p-8 mb-5 relative overflow-hidden">
+            <div className="bg-white dark:bg-[#1e1e30] rounded-2xl shadow-[0_8px_30px_rgba(25,28,30,0.05)] dark:shadow-[0_8px_30px_rgba(0,0,0,0.3)] p-8 mb-5 relative overflow-hidden">
               <div className="absolute top-0 right-0 w-1.5 h-full bg-gradient-to-b from-[#000666] dark:from-[#4a50d6] to-[#1a237e] dark:to-[#7b8fff] rounded-r-2xl"></div>
               
-              <h3 className="font-bold text-lg text-[#191c1e] dark:text-[#e0e0e0] flex items-center gap-2 mb-6">
+              <h3 className="font-bold text-lg text-[#191c1e] dark:text-[#f0f0f5] flex items-center gap-2 mb-6">
                 <Info className="w-5 h-5 text-[#000666] dark:text-[#7b8fff]" />
                 المعلومات الأساسية
               </h3>
@@ -257,10 +257,10 @@ export default function SetupPage() {
             </div>
 
             {/* Card 2: Registration Data */}
-            <div className="bg-white dark:bg-[#181818] rounded-2xl shadow-[0_8px_30px_rgba(25,28,30,0.05)] dark:shadow-[0_8px_30px_rgba(0,0,0,0.3)] p-8 mb-8 relative overflow-hidden">
+            <div className="bg-white dark:bg-[#1e1e30] rounded-2xl shadow-[0_8px_30px_rgba(25,28,30,0.05)] dark:shadow-[0_8px_30px_rgba(0,0,0,0.3)] p-8 mb-8 relative overflow-hidden">
               <div className="absolute top-0 right-0 w-1.5 h-full bg-gradient-to-b from-[#1a237e] dark:from-[#4a50d6] to-[#303f9f] dark:to-[#7b8fff] rounded-r-2xl"></div>
               
-              <h3 className="font-bold text-lg text-[#191c1e] dark:text-[#e0e0e0] flex items-center gap-2 mb-6">
+              <h3 className="font-bold text-lg text-[#191c1e] dark:text-[#f0f0f5] flex items-center gap-2 mb-6">
                 <Landmark className="w-5 h-5 text-[#000666] dark:text-[#7b8fff]" />
                 بيانات التسجيل الرسمية
               </h3>
@@ -290,7 +290,7 @@ export default function SetupPage() {
               <button 
                 type="button"
                 onClick={() => router.push('/')}
-                className="px-6 py-3 rounded-xl text-sm text-[#585c80] dark:text-[#888] hover:bg-[#e6e8ea] dark:hover:bg-[#1e1e1e] transition-colors font-medium"
+                className="px-6 py-3 rounded-xl text-sm text-[#585c80] dark:text-[#a0a0b8] hover:bg-[#e6e8ea] dark:hover:bg-[#1e1e1e] transition-colors font-medium"
               >
                 تخطي الآن
               </button>
