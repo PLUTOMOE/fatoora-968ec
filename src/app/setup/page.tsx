@@ -210,7 +210,7 @@ export default function SetupPage() {
             <span className="inline-block px-3 py-1 bg-[#d2d4ff] dark:bg-[#2e2e52] text-[#585c80] dark:text-[#b0b0ff] rounded-full text-xs font-semibold mb-4 tracking-wide">
               خطوة ١ من ٤
             </span>
-            <h1 className="font-black text-4xl text-[#191c1e] mb-3 leading-tight tracking-tight">
+            <h1 className="font-black text-4xl text-[#191c1e] dark:text-white mb-3 leading-tight tracking-tight">
               {t('pages_extra.setup.title')}
             </h1>
             <p className="text-[#585c80] dark:text-[#b0b0c8] text-base leading-relaxed">
