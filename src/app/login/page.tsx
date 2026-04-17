@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
 import { useTheme } from 'next-themes';
@@ -11,13 +11,16 @@ import { Receipt, ShieldCheck, TrendingUp, Mail, Lock, ArrowLeft, Loader2, Check
 export default function LoginPage() {
   const [isLogin, setIsLogin] = useState(true);
   const [email, setEmail] = useState('');
-  const { theme, setTheme } = useTheme();
+  const { resolvedTheme, setTheme } = useTheme();
   const { lang } = useTranslation();
   const setLanguage = useStore(s => s.setLanguage);
+  const [mounted, setMounted] = useState(false);
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [message, setMessage] = useState<string | null>(null);
+
+  useEffect(() => setMounted(true), []);
   
   const router = useRouter();
   const supabase = createClient();
@@ -87,10 +90,16 @@ export default function LoginPage() {
       <div className="bg-[#131b2e] dark:bg-[#0a0f1a] text-[#faf8ff] h-screen overflow-hidden flex items-center justify-center relative selection:bg-[#3d32e6] selection:text-white" dir="rtl">
         
         {/* Top Controls */}
+        {mounted && (
         <div className="fixed top-4 left-4 z-50 flex items-center gap-2">
           {/* Language Toggle */}
           <button
-            onClick={() => setLanguage(lang === 'ar' ? 'en' : 'ar')}
+            onClick={() => {
+              const newLang = lang === 'ar' ? 'en' : 'ar';
+              setLanguage(newLang);
+              document.documentElement.dir = newLang === 'ar' ? 'rtl' : 'ltr';
+              document.documentElement.lang = newLang;
+            }}
             className="h-9 px-3 flex items-center gap-1.5 rounded-full bg-white/10 hover:bg-white/20 text-white/80 hover:text-white transition-all backdrop-blur-sm border border-white/10 text-xs font-medium"
           >
             <Globe className="w-3.5 h-3.5" />
@@ -98,13 +107,14 @@ export default function LoginPage() {
           </button>
           {/* Theme Toggle */}
           <button
-            onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+            onClick={() => setTheme(resolvedTheme === 'dark' ? 'light' : 'dark')}
             className="w-9 h-9 flex items-center justify-center rounded-full bg-white/10 hover:bg-white/20 text-white/80 hover:text-white transition-all backdrop-blur-sm border border-white/10"
             aria-label="تبديل الوضع"
           >
-            {theme === 'dark' ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
+            {resolvedTheme === 'dark' ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
           </button>
         </div>
+        )}
         
         {/* Ambient Light Leaks */}
         <div className="absolute top-[-10%] right-[-5%] w-[800px] h-[800px] bg-[#3d32e6]/20 rounded-full blur-[120px] pointer-events-none"></div>
