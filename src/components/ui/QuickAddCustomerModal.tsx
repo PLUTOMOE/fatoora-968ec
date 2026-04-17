@@ -97,166 +97,207 @@ export function QuickAddCustomerModal({ isOpen, onClose, initialName, initialAiM
   };
 
   return (
-    <div className="fixed inset-0 z-[100] flex items-center justify-center bg-background/80 backdrop-blur-sm p-4">
-      <div className="bg-card w-full max-w-md rounded-2xl shadow-xl border border-border overflow-hidden animate-in zoom-in-95">
-        <div className="flex items-center justify-between p-4 border-b border-border bg-muted/30">
-          <div className="flex items-center gap-3">
-            <h2 className="text-lg font-bold text-foreground">إضافة عميل جديد</h2>
-            {!isAiMode && (
-              <button 
-                type="button" 
-                onClick={() => setIsAiMode(true)}
-                className="flex items-center gap-1.5 text-[11px] font-bold text-[#7A5A1A] bg-gradient-to-r from-[#FFE2A8] to-[#E8B96B] px-2 py-1 rounded-md shadow-sm hover:opacity-90 transition-opacity"
-              >
-                <Sparkles className="w-3.5 h-3.5" />
-                ملء بالذكاء الاصطناعي
-              </button>
-            )}
-          </div>
-          <button onClick={onClose} className="p-1 rounded-md text-muted-foreground hover:bg-muted transition-colors">
-            <X className="w-5 h-5" />
-          </button>
-        </div>
+    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-background/80 backdrop-blur-sm">
+      <div className="w-full max-w-3xl max-h-[90vh] overflow-y-auto custom-scrollbar bg-card border border-border rounded-[1.5rem] p-6 md:p-10 shadow-2xl shadow-black/5 relative animate-in zoom-in-95 duration-200">
         
+        {/* Decorative Header Blur */}
+        <div className="absolute top-0 right-0 w-full h-40 bg-gradient-to-b from-primary/5 to-transparent opacity-80 pointer-events-none"></div>
+
+        {/* Header */}
+        <header className="mb-8 relative z-10 flex items-start justify-between border-b border-border/50 pb-6">
+          <div>
+            <div className="flex items-center gap-3 mb-2">
+              <div className="w-12 h-12 bg-primary/10 rounded-2xl flex items-center justify-center text-primary">
+                <User className="w-6 h-6" />
+              </div>
+              <h2 className="text-2xl font-bold text-foreground tracking-tight">إضافة عميل جديد الشامل</h2>
+            </div>
+            <p className="text-muted-foreground text-[13px] font-medium pr-14 leading-relaxed">
+              يتم إضافة العميل مباشرة إلى قاعدة البيانات ويمكنك استخدامه فوراً في الفاتورة الحالية.
+            </p>
+          </div>
+
+          <div className="flex flex-col items-end gap-3">
+             <button onClick={onClose} className="p-1.5 rounded-full text-muted-foreground hover:bg-muted transition-colors bg-background border border-border/50">
+               <X className="w-5 h-5" />
+             </button>
+
+             {!isAiMode && (
+               <button 
+                  type="button" 
+                  onClick={() => setIsAiMode(true)}
+                  className="hidden sm:flex items-center gap-2 text-xs font-bold text-[#7A5A1A] bg-gradient-to-r from-[#FFE2A8] to-[#E8B96B] px-3 py-2 rounded-lg shadow-sm hover:shadow-md transition-all"
+                >
+                  <Sparkles className="w-3.5 h-3.5" />
+                  ملء بالذكاء الاصطناعي (AI)
+                </button>
+             )}
+          </div>
+        </header>
+
         {isAiMode ? (
-          <div className="p-6">
-            {aiAnalysisStep === 0 && (
-              <div 
-                className="border-2 border-dashed border-border hover:border-primary/50 rounded-xl p-8 text-center cursor-pointer bg-muted/20 hover:bg-muted/40 transition-colors"
-                onClick={() => fileInputRef.current?.click()}
-              >
-                <input 
-                  type="file" 
-                  ref={fileInputRef} 
-                  className="hidden" 
-                  accept=".pdf,image/png,image/jpeg,image/jpg" 
-                  onChange={handleFileSelect} 
-                />
-                <div className="w-12 h-12 bg-gradient-to-br from-[#FFE2A8] to-[#E8B96B] rounded-full flex items-center justify-center mx-auto mb-3">
-                  <Upload className="w-6 h-6 text-[#7A5A1A]" />
+          <div className="relative z-10 animate-in zoom-in-95">
+            <div className="bg-muted/30 border border-border rounded-2xl p-8">
+              {aiAnalysisStep === 0 && (
+                <div 
+                  className="border-2 border-dashed border-[#E8B96B]/50 hover:border-[#E8B96B] rounded-xl p-10 text-center cursor-pointer bg-background transition-all hover:shadow-md"
+                  onClick={() => fileInputRef.current?.click()}
+                >
+                  <input 
+                    type="file" 
+                    ref={fileInputRef} 
+                    className="hidden" 
+                    accept=".pdf,image/png,image/jpeg,image/jpg" 
+                    onChange={handleFileSelect} 
+                  />
+                  <div className="w-14 h-14 bg-gradient-to-br from-[#FFE2A8] to-[#E8B96B] rounded-2xl flex items-center justify-center mx-auto mb-4 custom-shadow">
+                    <Upload className="w-7 h-7 text-[#7A5A1A]" />
+                  </div>
+                  <h3 className="text-base font-bold text-foreground mb-2">ارفع السجل التجاري أو البطاقة الضريبية</h3>
+                  <p className="text-xs text-muted-foreground">صورة أو PDF (الذكاء الاصطناعي سيقوم بملء كافة البيانات المتاحة أسفله)</p>
                 </div>
-                <h3 className="text-sm font-bold text-foreground mb-1">ارفع السجل التجاري أو البطاقة الضريبية</h3>
-                <p className="text-[11px] text-muted-foreground">صورة أو PDF (الذكاء الاصطناعي سيقوم بملء البيانات)</p>
-              </div>
-            )}
-            
-            {aiAnalysisStep === 1 && (
-              <div className="py-8 text-center animate-in fade-in">
-                <Loader2 className="w-10 h-10 text-primary animate-spin mx-auto mb-4" />
-                <h3 className="text-sm font-bold text-foreground mb-1">جاري قراءة المستند...</h3>
-                <p className="text-[12px] text-muted-foreground">الذكاء الاصطناعي يستخرج البيانات الآن</p>
-                
-                <div className="mt-6 max-w-xs mx-auto space-y-2 text-right">
-                  <div className="flex items-center gap-2 text-[11px] text-muted-foreground"><Loader2 className="w-3 h-3 animate-spin"/> استخراج النصوص (OCR)...</div>
-                  <div className="flex items-center gap-2 text-[11px] text-muted-foreground"><Loader2 className="w-3 h-3 animate-spin"/> مطابقة الحقول وتحليلها...</div>
+              )}
+              
+              {aiAnalysisStep === 1 && (
+                <div className="py-10 text-center animate-in fade-in">
+                  <div className="relative w-14 h-14 mx-auto mb-5">
+                    <div className="absolute inset-0 border-4 border-muted rounded-full"></div>
+                    <div className="absolute inset-0 border-4 border-primary rounded-full border-t-transparent animate-spin"></div>
+                    <Sparkles className="absolute inset-0 m-auto w-5 h-5 text-primary animate-pulse" />
+                  </div>
+                  <h3 className="text-base font-bold text-foreground mb-2">جاري قراءة المستند وتحليله...</h3>
+                  <div className="flex justify-center items-center gap-2 text-[12px] text-muted-foreground bg-background p-2 rounded-lg border border-border/50 max-w-[200px] mx-auto">
+                      <Loader2 className="w-3 h-3 animate-spin text-primary"/> قراءة البيانات الضريبية
+                  </div>
                 </div>
-              </div>
-            )}
-            
-            {aiAnalysisStep === 2 && (
-              <div className="py-8 text-center animate-in zoom-in">
-                <div className="w-12 h-12 bg-[#22C55E] rounded-full flex items-center justify-center mx-auto mb-3">
-                  <CheckCircle2 className="w-6 h-6 text-white" />
+              )}
+              
+              {aiAnalysisStep === 2 && (
+                <div className="py-10 text-center animate-in zoom-in">
+                  <div className="w-14 h-14 bg-[#22C55E] rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg shadow-green-500/20">
+                    <CheckCircle2 className="w-7 h-7 text-white" />
+                  </div>
+                  <h3 className="text-base font-bold text-[#15803D] mb-1">تم الاستخراج والتعبئة بنجاح!</h3>
+                  <p className="text-xs text-muted-foreground">دقة البيانات 95% برجاء مراجعتها أدناه.</p>
                 </div>
-                <h3 className="text-sm font-bold text-[#15803D] mb-1">تم الاستخراج بنجاح!</h3>
-                <p className="text-[12px] text-muted-foreground">دقة البيانات تصل إلى 96%</p>
+              )}
+
+              <div className="pt-4 flex justify-center">
+                 <button onClick={() => setIsAiMode(false)} className="text-xs font-medium text-muted-foreground hover:text-foreground">
+                   الرجوع للوضع اليدوي
+                 </button>
               </div>
-            )}
-            
-            <div className="pt-4 flex justify-end">
-               <button onClick={() => setIsAiMode(false)} className="text-[12px] text-muted-foreground hover:text-foreground">إلغاء</button>
             </div>
           </div>
         ) : (
-        <form onSubmit={handleSubmit} className="p-6 space-y-5">
-          {/* Type Selection */}
-          <div className="grid grid-cols-2 gap-3 p-1 bg-muted rounded-lg">
-            <button
-              type="button"
-              onClick={() => setFormData({ ...formData, type: 'company' })}
-              className={`flex items-center justify-center gap-2 py-2 rounded-md text-sm font-medium transition-all ${
-                formData.type === 'company' ? 'bg-background shadow-sm text-foreground' : 'text-muted-foreground hover:text-foreground'
-              }`}
-            >
-              <Building2 className="w-4 h-4" /> شركة / مؤسسة
-            </button>
-            <button
-              type="button"
-              onClick={() => setFormData({ ...formData, type: 'individual' })}
-              className={`flex items-center justify-center gap-2 py-2 rounded-md text-sm font-medium transition-all ${
-                formData.type === 'individual' ? 'bg-background shadow-sm text-foreground' : 'text-muted-foreground hover:text-foreground'
-              }`}
-            >
-              <User className="w-4 h-4" /> فرد
-            </button>
-          </div>
+          <form onSubmit={handleSubmit} className="relative z-10 space-y-6 animate-in fade-in duration-500">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+              
+              {/* Full Width Field */}
+              <div className="col-span-1 md:col-span-2">
+                <label className="block text-foreground font-semibold text-[13px] mb-1.5">اسم العميل أو الجهة <span className="text-red-500">*</span></label>
+                <div className="relative group">
+                  <div className="absolute right-4 top-1/2 -translate-y-1/2 text-muted-foreground z-30 pointer-events-none">
+                     <Building2 className="w-4 h-4 text-muted-foreground/60 group-focus-within:text-primary transition-colors" />
+                  </div>
+                  <input 
+                    required
+                    type="text" 
+                    value={formData.name}
+                    onChange={e => setFormData({...formData, name: e.target.value})}
+                    placeholder="مثال: شركة التقنية الحديثة"
+                    className="w-full h-11 bg-muted/30 border border-border/50 hover:bg-muted/50 rounded-xl pr-11 pl-4 text-foreground placeholder:text-muted-foreground/60 focus:bg-background focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none text-[13px]" 
+                  />
+                </div>
+              </div>
 
-          <div className="space-y-4">
-            <div>
-              <label className="block text-xs font-semibold text-muted-foreground mb-1.5">الاسم (مطلوب)</label>
-              <input
-                required
-                type="text"
-                value={formData.name}
-                onChange={e => setFormData({ ...formData, name: e.target.value })}
-                className="w-full h-10 px-3 bg-background border border-border rounded-lg text-sm focus:outline-none focus:border-primary"
-                placeholder="اسم العميل"
-              />
-            </div>
-            
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <label className="block text-xs font-semibold text-muted-foreground mb-1.5">الهاتف (اختياري)</label>
-                <input
-                  type="text"
-                  value={formData.phone}
-                  onChange={e => setFormData({ ...formData, phone: e.target.value })}
-                  className="w-full h-10 px-3 bg-background border border-border rounded-lg text-sm focus:outline-none focus:border-primary"
-                  placeholder="05XXXXXXXX"
+              <div className="col-span-1">
+                <label className="block text-foreground font-semibold text-[13px] mb-1.5">النوع <span className="text-red-500">*</span></label>
+                <div className="grid grid-cols-2 gap-2 h-11">
+                  <button
+                    type="button"
+                    onClick={() => setFormData({ ...formData, type: 'company' })}
+                    className={`flex items-center justify-center gap-2 rounded-lg text-[13px] font-medium transition-all ${
+                      formData.type === 'company' ? 'bg-primary text-primary-foreground shadow-sm' : 'bg-muted/50 text-muted-foreground hover:bg-muted'
+                    }`}
+                  >
+                   شركة / مؤسسة
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setFormData({ ...formData, type: 'individual' })}
+                    className={`flex items-center justify-center gap-2 rounded-lg text-[13px] font-medium transition-all ${
+                      formData.type === 'individual' ? 'bg-primary text-primary-foreground shadow-sm' : 'bg-muted/50 text-muted-foreground hover:bg-muted'
+                    }`}
+                  >
+                   فرد
+                  </button>
+                </div>
+              </div>
+
+              <div className="col-span-1">
+                <label className="block text-foreground font-semibold text-[13px] mb-1.5">العنوان / المدينة</label>
+                <input 
+                    type="text" 
+                    value={formData.address}
+                    onChange={(e) => setFormData({...formData, address: e.target.value})}
+                    placeholder="الرياض" 
+                    className="w-full h-11 bg-muted/30 border border-border/50 hover:bg-muted/50 rounded-xl px-4 text-foreground placeholder:text-muted-foreground/60 focus:bg-background focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none text-[13px]"
                 />
               </div>
-              <div>
-                <label className="block text-xs font-semibold text-muted-foreground mb-1.5">الرقم الضريبي (اختياري)</label>
-                <input
-                  type="text"
-                  value={formData.tax_number}
-                  onChange={e => setFormData({ ...formData, tax_number: e.target.value })}
-                  className="w-full h-10 px-3 bg-background border border-border rounded-lg text-sm focus:outline-none focus:border-primary"
-                  placeholder="15 رقم للشركات"
+
+              {/* Divider */}
+              <div className="col-span-1 md:col-span-2 pt-2 pb-1">
+                 <h3 className="text-sm font-bold text-foreground mb-3 flex items-center gap-2">
+                    معلومات إضافية للتواصل (تظهر في الفواتير)
+                 </h3>
+              </div>
+
+              <div className="col-span-1">
+                <label className="block text-foreground font-semibold text-[13px] mb-1.5">الرقم الضريبي (إن وجد)</label>
+                <input 
+                    type="text" 
+                    dir="ltr"
+                    value={formData.tax_number}
+                    onChange={(e) => setFormData({...formData, tax_number: e.target.value})}
+                    placeholder="310000000000003" 
+                    className="w-full h-11 bg-muted/30 border border-border/50 hover:bg-muted/50 rounded-xl px-4 text-foreground placeholder:text-muted-foreground/60 focus:bg-background focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none text-[13px] text-left font-mono"
                 />
               </div>
+
+              <div className="col-span-1">
+                <label className="block text-foreground font-semibold text-[13px] mb-1.5">رقم الجوال</label>
+                <input 
+                    type="tel" 
+                    dir="ltr"
+                    value={formData.phone}
+                    onChange={(e) => setFormData({...formData, phone: e.target.value})}
+                    placeholder="+966 50 000 0000" 
+                    className="w-full h-11 bg-muted/30 border border-border/50 hover:bg-muted/50 rounded-xl px-4 text-foreground placeholder:text-muted-foreground/60 focus:bg-background focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none text-[13px] text-left"
+                />
+              </div>
+
             </div>
 
-            <div>
-              <label className="block text-xs font-semibold text-muted-foreground mb-1.5">العنوان / المدينة (اختياري)</label>
-              <input
-                type="text"
-                value={formData.address}
-                onChange={e => setFormData({ ...formData, address: e.target.value })}
-                className="w-full h-10 px-3 bg-background border border-border rounded-lg text-sm focus:outline-none focus:border-primary"
-                placeholder="الرياض، المملكة العربية السعودية"
-              />
+            {/* Action Buttons */}
+            <div className="flex items-center justify-end gap-3 pt-6 border-t border-border/50">
+              <button 
+                onClick={onClose} 
+                className="px-5 py-2.5 rounded-xl text-muted-foreground text-sm font-semibold hover:bg-muted transition-colors" 
+                type="button"
+              >
+                إلغاء
+              </button>
+              <button 
+                disabled={loading || !formData.name}
+                className="bg-primary text-primary-foreground px-6 py-2.5 rounded-xl text-sm font-semibold shadow-md shadow-primary/20 hover:-translate-y-0.5 transition-all flex items-center gap-2 disabled:opacity-50 disabled:hover:translate-y-0 disabled:hover:shadow-none" 
+                type="submit"
+              >
+                {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : null}
+                {loading ? 'جاري الحفظ...' : 'حفظ واستخدام العميل'}
+              </button>
             </div>
-          </div>
-
-          <div className="pt-2 flex items-center justify-end gap-3 border-t border-border mt-6">
-            <button
-              type="button"
-              onClick={onClose}
-              className="px-4 py-2 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
-            >
-              إلغاء
-            </button>
-            <button
-              type="submit"
-              disabled={loading || !formData.name}
-              className="flex items-center gap-2 px-5 py-2 rounded-lg bg-primary text-primary-foreground text-sm font-semibold hover:bg-primary/90 transition-colors shadow-sm disabled:opacity-50"
-            >
-              {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : null}
-              حفظ واستخدام
-            </button>
-          </div>
-        </form>
+          </form>
         )}
       </div>
     </div>
