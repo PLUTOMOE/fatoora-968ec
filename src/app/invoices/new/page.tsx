@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { ChevronRight, Save, LayoutTemplate, Printer } from 'lucide-react';
+import { ChevronRight, Save, LayoutTemplate, Eye, X, ArrowRight, Printer } from 'lucide-react';
 import { ClassicTemplate } from '@/components/invoice-templates/ClassicTemplate';
 import { ModernTemplate } from '@/components/invoice-templates/ModernTemplate';
 import { MinimalTemplate } from '@/components/invoice-templates/MinimalTemplate';
@@ -11,7 +11,7 @@ import { useStore } from '@/store/useStore';
 
 export default function NewInvoicePage() {
   const router = useRouter();
-  const { language } = useStore();
+  const [showPreview, setShowPreview] = useState(false);
   const [settings, setSettings] = useState<any>({
     template: 'elite',
     logo_url: '',
@@ -62,8 +62,7 @@ export default function NewInvoicePage() {
       notes: settings.default_notes,
       template: settings.template
     },
-    type: 'invoice' as const,
-    language
+    type: 'invoice' as const
   };
 
   const renderTemplate = () => {
@@ -76,8 +75,49 @@ export default function NewInvoicePage() {
     }
   };
 
+  if (showPreview) {
+    return (
+      <div className="space-y-6">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-4">
+            <button 
+              onClick={() => setShowPreview(false)}
+              className="flex items-center justify-center w-10 h-10 rounded-full bg-card border border-border hover:bg-muted transition-colors"
+            >
+              <ArrowRight className="w-5 h-5 text-foreground" />
+            </button>
+            <div>
+              <h1 className="text-2xl font-bold text-foreground">معاينة الفاتورة</h1>
+              <p className="text-sm text-muted-foreground mt-1">تأكد من شكل الفاتورة قبل الإصدار</p>
+            </div>
+          </div>
+          <div className="flex items-center gap-3">
+            <button className="flex items-center gap-2 h-10 px-4 rounded-xl text-sm font-medium border border-border bg-card hover:bg-muted transition-colors">
+              <Printer className="w-4 h-4" />
+              طباعة
+            </button>
+            <button className="flex items-center gap-2 h-10 px-6 rounded-xl text-sm font-semibold bg-primary text-primary-foreground shadow-md transition-all hover:shadow-lg hover:-translate-y-0.5">
+              <Save className="w-4 h-4" />
+              تأكيد وإصدار
+            </button>
+          </div>
+        </div>
+
+        <div className="w-full max-w-4xl mx-auto mt-6">
+          <div className="w-full overflow-hidden rounded-xl border border-border shadow-2xl bg-card">
+            <div className="w-full overflow-x-auto custom-scrollbar p-0">
+              <div className="min-w-[750px] w-full">
+                 {renderTemplate()}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 max-w-4xl mx-auto">
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
@@ -96,51 +136,55 @@ export default function NewInvoicePage() {
             <LayoutTemplate className="w-4 h-4" />
             تغيير القالب
           </button>
+          <button 
+            onClick={() => setShowPreview(true)}
+            className="flex items-center gap-2 h-10 px-4 rounded-xl text-sm font-medium border border-border bg-card hover:bg-muted transition-colors"
+          >
+            <Eye className="w-4 h-4 text-primary" />
+            معاينة
+          </button>
           <button className="flex items-center gap-2 h-10 px-6 rounded-xl text-sm font-semibold bg-primary text-primary-foreground shadow-md transition-all hover:shadow-lg hover:-translate-y-0.5">
             <Save className="w-4 h-4" />
-            حفظ وإصدار
+            تأكيد وإصدار
           </button>
         </div>
       </div>
 
-      {/* Split layout: Form on right, Preview on left (or block mode if needed) */}
-      <div className="grid grid-cols-1 xl:grid-cols-12 gap-8">
-        
-        {/* Form Area */}
-        <div className="xl:col-span-5 space-y-6">
-          <div className="bg-card border border-border rounded-xl p-6">
-            <h2 className="text-sm font-bold text-foreground mb-4">بيانات العميل</h2>
-            <div className="space-y-4">
-              <input type="text" placeholder="اسم العميل" className="w-full bg-background border border-border rounded-lg px-4 py-2.5 text-sm outline-none focus:border-primary" />
-              <input type="text" placeholder="الرقم الضريبي" className="w-full bg-background border border-border rounded-lg px-4 py-2.5 text-sm outline-none focus:border-primary" />
-            </div>
+      {/* Form Area centered and wide */}
+      <div className="space-y-6">
+        <div className="bg-card border border-border rounded-xl p-6 shadow-sm">
+          <h2 className="text-sm font-bold text-foreground mb-4">بيانات العميل والفاتورة</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <input type="text" placeholder="اسم العميل" className="w-full bg-background border border-border rounded-lg px-4 py-2.5 text-sm outline-none focus:border-primary" />
+            <input type="text" placeholder="الرقم الضريبي للعميل" className="w-full bg-background border border-border rounded-lg px-4 py-2.5 text-sm outline-none focus:border-primary" />
+            <input type="date" className="w-full bg-background border border-border rounded-lg px-4 py-2.5 text-sm outline-none focus:border-primary text-muted-foreground" />
+            <input type="date" className="w-full bg-background border border-border rounded-lg px-4 py-2.5 text-sm outline-none focus:border-primary text-muted-foreground" title="تاريخ الاستحقاق" />
           </div>
-          
-          <div className="bg-card border border-border rounded-xl p-6">
-            <h2 className="text-sm font-bold text-foreground mb-4">البنود</h2>
-            <div className="p-4 border border-border border-dashed rounded-lg text-center text-sm text-muted-foreground cursor-pointer hover:border-primary hover:text-primary transition-colors">
-              + أضف بند جديد
-            </div>
+        </div>
+        
+        <div className="bg-card border border-border rounded-xl p-6 shadow-sm">
+          <h2 className="text-sm font-bold text-foreground mb-4">البنود والخدمات</h2>
+          <div className="p-6 border-2 border-border border-dashed rounded-lg text-center cursor-pointer hover:border-primary hover:text-primary transition-colors hover:bg-primary/5">
+            <span className="text-sm font-medium text-muted-foreground hover:text-primary">+ اضغط هنا لإضافة بند جديد</span>
           </div>
         </div>
 
-        {/* Live Preview Area */}
-        <div className="xl:col-span-7">
-          <div className="sticky top-24">
-            <div className="flex justify-between items-center mb-3">
-              <span className="text-sm font-bold text-muted-foreground uppercase tracking-wider">معاينة حية (Live Preview)</span>
-              <span className="text-xs font-mono bg-muted px-2 py-1 rounded text-foreground">Template: {settings.template.toUpperCase()}</span>
-            </div>
-            <div className="w-full overflow-hidden rounded-xl border border-border shadow-2xl bg-card">
-              <div className="w-full overflow-x-auto custom-scrollbar">
-                <div className="min-w-[750px] w-full p-4 lg:p-0">
-                   {renderTemplate()}
-                </div>
-              </div>
-            </div>
+        <div className="bg-card border border-border rounded-xl p-6 shadow-sm flex flex-col items-end">
+          <div className="w-full md:w-1/2 space-y-3">
+             <div className="flex justify-between text-sm text-muted-foreground">
+               <span>المجموع الفرعي</span>
+               <span>0 ر.س</span>
+             </div>
+             <div className="flex justify-between text-sm text-muted-foreground">
+               <span>ضريبة القيمة المضافة (15%)</span>
+               <span>0 ر.س</span>
+             </div>
+             <div className="flex justify-between text-lg font-bold text-foreground border-t border-border pt-3 mt-2">
+               <span>الإجمالي</span>
+               <span>0 ر.س</span>
+             </div>
           </div>
         </div>
-        
       </div>
     </div>
   );
