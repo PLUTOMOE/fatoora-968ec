@@ -48,7 +48,7 @@ export default function InvoicesList() {
     <div className="space-y-5">
       <div className="flex items-end justify-between flex-wrap gap-4">
         <div>
-          <h1 className="text-[24px] font-semibold text-foreground tracking-tight">t('pages.invoices.title')</h1>
+          <h1 className="text-[24px] font-semibold text-foreground tracking-tight">{t('pages.invoices.title')}</h1>
           <p className="text-[13px] text-muted-foreground mt-1">{data.length === 0 ? 'لا يوجد فواتير بعد' : `${data.length} فاتورة مسجلة`}</p>
         </div>
         <div className="flex items-center gap-2">

@@ -132,9 +132,10 @@ export default function NewInvoicePage() {
               <span className="text-xs font-mono bg-muted px-2 py-1 rounded text-foreground">Template: {settings.template.toUpperCase()}</span>
             </div>
             <div className="w-full overflow-hidden rounded-xl border border-border shadow-2xl bg-card">
-              {/* Scale down the preview so it fits nicely on screen */}
-              <div style={{ transform: 'scale(1)', transformOrigin: 'top center', width: '100%' }}>
-                 {renderTemplate()}
+              <div className="w-full overflow-x-auto custom-scrollbar">
+                <div className="min-w-[750px] w-full p-4 lg:p-0">
+                   {renderTemplate()}
+                </div>
               </div>
             </div>
           </div>
