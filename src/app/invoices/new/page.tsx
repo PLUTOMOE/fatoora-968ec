@@ -2,12 +2,20 @@
 
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { ChevronRight, Save, LayoutTemplate, Eye, X, ArrowRight, Printer } from 'lucide-react';
+import { ChevronRight, Save, LayoutTemplate, Eye, X, ArrowRight, Printer, Plus, Trash2, GripVertical } from 'lucide-react';
 import { ClassicTemplate } from '@/components/invoice-templates/ClassicTemplate';
 import { ModernTemplate } from '@/components/invoice-templates/ModernTemplate';
 import { MinimalTemplate } from '@/components/invoice-templates/MinimalTemplate';
 import { EliteTemplate } from '@/components/invoice-templates/EliteTemplate';
 import { useStore } from '@/store/useStore';
+
+interface InvoiceItem {
+  name: string;
+  description: string;
+  qty: number;
+  price: number;
+  tax_rate: number;
+}
 
 export default function NewInvoicePage() {
   const router = useRouter();
@@ -20,6 +28,13 @@ export default function NewInvoicePage() {
     default_notes: ''
   });
 
+  // Invoice Data States
+  const [customerInfo, setCustomerInfo] = useState({ name: '', tax_number: '', address: '' });
+  const [invoiceDates, setInvoiceDates] = useState({ date: new Date().toISOString().split('T')[0], due_date: '' });
+  const [items, setItems] = useState<InvoiceItem[]>([
+    { name: '', description: '', qty: 1, price: 0, tax_rate: 15 }
+  ]);
+
   useEffect(() => {
     const stored = localStorage.getItem('invoice_settings');
     if (stored) {
@@ -27,34 +42,49 @@ export default function NewInvoicePage() {
     }
   }, []);
 
-  const dummyData = {
+  const handleAddItem = () => {
+    setItems([...items, { name: '', description: '', qty: 1, price: 0, tax_rate: 15 }]);
+  };
+
+  const handleRemoveItem = (index: number) => {
+    setItems(items.filter((_, i) => i !== index));
+  };
+
+  const handleItemChange = (index: number, field: keyof InvoiceItem, value: any) => {
+    const newItems = [...items];
+    newItems[index] = { ...newItems[index], [field]: value };
+    setItems(newItems);
+  };
+
+  // Calculations
+  const subtotal = items.reduce((acc, item) => acc + (item.qty * item.price), 0);
+  const tax = items.reduce((acc, item) => acc + (item.qty * item.price * (item.tax_rate / 100)), 0);
+  const total = subtotal + tax;
+
+  const invoiceDataPayload = {
     entity: {
-      name: 'Global Elite',
-      address: '123 Corporate Blvd, Suite 400\nNew York, NY 10001',
-      phone: '+1 800 555 0199',
+      name: 'عاصمة المجد للتجارة',
+      address: 'المملكة العربية السعودية، الرياض',
+      phone: '+966 50 000 0000',
       tax_number: '300123456700003',
       cr_number: '1010123456',
       logo_url: settings.logo_url
     },
     customer: {
-      name: 'Acme Corp International',
-      address: 'Attn: Jane Doe, VP Procurement',
+      name: customerInfo.name || 'عميل غير محدد',
+      address: customerInfo.address,
       phone: '',
-      tax_number: '310987654300003'
+      tax_number: customerInfo.tax_number
     },
-    items: [
-      { name: 'Enterprise Architecture Audit', qty: 1, price: 25000, tax_rate: 15 },
-      { name: 'Cloud Migration Strategy Phase I', qty: 1, price: 45000, tax_rate: 15 },
-      { name: 'Security Compliance Review', qty: 1, price: 18500, tax_rate: 15 }
-    ],
+    items: items.length > 0 && items[0].name ? items : [{ name: 'بند فارغ', qty: 0, price: 0, tax_rate: 0 }],
     invoice: {
       number: 'INV-2026-001',
-      date: new Date().toLocaleDateString('en-US'),
-      due_date: new Date(Date.now() + 30*24*60*60*1000).toLocaleDateString('en-US'),
-      subtotal: 88500,
-      tax: 13275,
+      date: invoiceDates.date,
+      due_date: invoiceDates.due_date,
+      subtotal,
+      tax,
       discount: 0,
-      total: 101775
+      total
     },
     settings: {
       stamp_url: settings.stamp_url,
@@ -67,11 +97,11 @@ export default function NewInvoicePage() {
 
   const renderTemplate = () => {
     switch (settings.template) {
-      case 'classic': return <ClassicTemplate {...dummyData} />;
-      case 'modern': return <ModernTemplate {...dummyData} />;
-      case 'minimal': return <MinimalTemplate {...dummyData} />;
-      case 'elite': return <EliteTemplate {...dummyData} />;
-      default: return <EliteTemplate {...dummyData} />;
+      case 'classic': return <ClassicTemplate {...invoiceDataPayload} />;
+      case 'modern': return <ModernTemplate {...invoiceDataPayload} />;
+      case 'minimal': return <MinimalTemplate {...invoiceDataPayload} />;
+      case 'elite': return <EliteTemplate {...invoiceDataPayload} />;
+      default: return <EliteTemplate {...invoiceDataPayload} />;
     }
   };
 
@@ -104,9 +134,9 @@ export default function NewInvoicePage() {
         </div>
 
         <div className="w-full max-w-4xl mx-auto mt-6">
-          <div className="w-full overflow-hidden rounded-xl border border-border shadow-2xl bg-card">
+          <div className="w-full overflow-hidden rounded-xl border border-border bg-card">
             <div className="w-full overflow-x-auto custom-scrollbar p-0">
-              <div className="min-w-[750px] w-full">
+              <div className="min-w-[750px] w-full border border-gray-200">
                  {renderTemplate()}
               </div>
             </div>
@@ -117,7 +147,7 @@ export default function NewInvoicePage() {
   }
 
   return (
-    <div className="space-y-6 max-w-4xl mx-auto">
+    <div className="space-y-6 max-w-5xl mx-auto pb-20">
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
@@ -145,46 +175,177 @@ export default function NewInvoicePage() {
           </button>
           <button className="flex items-center gap-2 h-10 px-6 rounded-xl text-sm font-semibold bg-primary text-primary-foreground shadow-md transition-all hover:shadow-lg hover:-translate-y-0.5">
             <Save className="w-4 h-4" />
-            تأكيد وإصدار
+            إصدار الفاتورة
           </button>
         </div>
       </div>
 
-      {/* Form Area centered and wide */}
+      {/* Form Area */}
       <div className="space-y-6">
+        
+        {/* Customer Information */}
         <div className="bg-card border border-border rounded-xl p-6 shadow-sm">
-          <h2 className="text-sm font-bold text-foreground mb-4">بيانات العميل والفاتورة</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <input type="text" placeholder="اسم العميل" className="w-full bg-background border border-border rounded-lg px-4 py-2.5 text-sm outline-none focus:border-primary" />
-            <input type="text" placeholder="الرقم الضريبي للعميل" className="w-full bg-background border border-border rounded-lg px-4 py-2.5 text-sm outline-none focus:border-primary" />
-            <input type="date" className="w-full bg-background border border-border rounded-lg px-4 py-2.5 text-sm outline-none focus:border-primary text-muted-foreground" />
-            <input type="date" className="w-full bg-background border border-border rounded-lg px-4 py-2.5 text-sm outline-none focus:border-primary text-muted-foreground" title="تاريخ الاستحقاق" />
+          <h2 className="text-sm font-bold text-foreground mb-4">بيانات العميل والإصدار</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div className="lg:col-span-2 space-y-1.5">
+              <label className="text-xs font-semibold text-muted-foreground">اسم العميل (مطلوب)</label>
+              <input 
+                type="text" 
+                value={customerInfo.name}
+                onChange={(e) => setCustomerInfo({...customerInfo, name: e.target.value})}
+                placeholder="ابحث أو أدخل اسم جديد..." 
+                className="w-full bg-background border border-border rounded-lg px-4 py-2.5 text-sm outline-none focus:border-primary" 
+              />
+            </div>
+            <div className="space-y-1.5">
+              <label className="text-xs font-semibold text-muted-foreground">الرقم الضريبي للعميل</label>
+              <input 
+                type="text" 
+                value={customerInfo.tax_number}
+                onChange={(e) => setCustomerInfo({...customerInfo, tax_number: e.target.value})}
+                placeholder="الرقم الضريبي..." 
+                className="w-full bg-background border border-border rounded-lg px-4 py-2.5 text-sm outline-none focus:border-primary" 
+              />
+            </div>
+            <div className="space-y-1.5">
+              <label className="text-xs font-semibold text-muted-foreground">تاريخ الاستحقاق</label>
+              <input 
+                type="date" 
+                value={invoiceDates.due_date}
+                onChange={(e) => setInvoiceDates({...invoiceDates, due_date: e.target.value})}
+                className="w-full bg-background border border-border rounded-lg px-4 py-2.5 text-sm outline-none focus:border-primary text-foreground" 
+              />
+            </div>
           </div>
         </div>
         
-        <div className="bg-card border border-border rounded-xl p-6 shadow-sm">
-          <h2 className="text-sm font-bold text-foreground mb-4">البنود والخدمات</h2>
-          <div className="p-6 border-2 border-border border-dashed rounded-lg text-center cursor-pointer hover:border-primary hover:text-primary transition-colors hover:bg-primary/5">
-            <span className="text-sm font-medium text-muted-foreground hover:text-primary">+ اضغط هنا لإضافة بند جديد</span>
+        {/* Line Items Table (Odoo/Daftra Style) */}
+        <div className="bg-card border border-border rounded-xl shadow-sm overflow-hidden">
+          <div className="p-4 border-b border-border bg-muted/30">
+            <h2 className="text-sm font-bold text-foreground">بنود الفاتورة</h2>
+          </div>
+          
+          <div className="w-full overflow-x-auto">
+            <table className="w-full text-right min-w-[800px]">
+              <thead>
+                <tr className="bg-muted/10 border-b border-border text-[12px] font-semibold text-muted-foreground uppercase tracking-wider">
+                  <th className="w-8 py-3 px-2"></th>
+                  <th className="py-3 px-4 w-[40%]">المنتج / الخدمة</th>
+                  <th className="py-3 px-4 w-24 text-center">الكمية</th>
+                  <th className="py-3 px-4 w-32 text-center">سعر الوحدة</th>
+                  <th className="py-3 px-4 w-24 text-center">الضريبة</th>
+                  <th className="py-3 px-4 w-32 text-left">المجموع (ر.س)</th>
+                  <th className="py-3 px-4 w-12 text-center"></th>
+                </tr>
+              </thead>
+              <tbody>
+                {items.map((item, idx) => {
+                  const itemTotal = item.qty * item.price;
+                  const itemTotalWithTax = itemTotal + (itemTotal * (item.tax_rate / 100));
+                  
+                  return (
+                    <tr key={idx} className="border-b border-border/50 bg-background hover:bg-muted/20 transition-colors group">
+                      <td className="py-3 px-2 align-top text-center cursor-move text-muted-foreground/30 hover:text-muted-foreground">
+                        <GripVertical className="w-4 h-4 mx-auto mt-3" />
+                      </td>
+                      <td className="py-3 px-4 align-top">
+                        <div className="space-y-2">
+                          <input 
+                            type="text" 
+                            value={item.name}
+                            onChange={(e) => handleItemChange(idx, 'name', e.target.value)}
+                            placeholder="ابحث عن منتج أو اكتب مباشرة..." 
+                            className="w-full bg-transparent border border-transparent focus:border-border hover:border-border rounded-md px-3 py-2 text-sm outline-none focus:bg-background transition-all font-medium"
+                          />
+                          <input 
+                            type="text" 
+                            value={item.description}
+                            onChange={(e) => handleItemChange(idx, 'description', e.target.value)}
+                            placeholder="الوصف الإضافي (اختياري)..." 
+                            className="w-full bg-transparent border border-transparent focus:border-border hover:border-border rounded-md px-3 py-1.5 text-[13px] outline-none text-muted-foreground focus:text-foreground focus:bg-background transition-all"
+                          />
+                        </div>
+                      </td>
+                      <td className="py-3 px-4 align-top">
+                        <input 
+                          type="number" 
+                          min="1"
+                          value={item.qty}
+                          onChange={(e) => handleItemChange(idx, 'qty', parseFloat(e.target.value) || 0)}
+                          className="w-full text-center bg-transparent border border-transparent focus:border-border hover:border-border rounded-md px-2 py-2 text-sm outline-none focus:bg-background transition-all"
+                        />
+                      </td>
+                      <td className="py-3 px-4 align-top">
+                        <input 
+                          type="number" 
+                          min="0"
+                          value={item.price}
+                          onChange={(e) => handleItemChange(idx, 'price', parseFloat(e.target.value) || 0)}
+                          className="w-full text-center bg-transparent border border-transparent focus:border-border hover:border-border rounded-md px-2 py-2 text-sm outline-none focus:bg-background transition-all tabular-nums"
+                        />
+                      </td>
+                      <td className="py-3 px-4 align-top">
+                        <select 
+                          value={item.tax_rate}
+                          onChange={(e) => handleItemChange(idx, 'tax_rate', parseFloat(e.target.value))}
+                          className="w-full text-center bg-transparent border border-transparent focus:border-border hover:border-border rounded-md px-2 py-2 text-[13px] outline-none focus:bg-background transition-all appearance-none cursor-pointer"
+                          style={{ WebkitAppearance: 'none' }}
+                        >
+                          <option value="15">15%</option>
+                          <option value="0">0%</option>
+                        </select>
+                      </td>
+                      <td className="py-3 px-4 align-top pt-5 text-left font-semibold text-foreground tabular-nums">
+                        {itemTotalWithTax.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                      </td>
+                      <td className="py-3 px-4 align-top pt-4">
+                        <button 
+                          onClick={() => handleRemoveItem(idx)}
+                          className="w-8 h-8 mx-auto flex items-center justify-center text-muted-foreground/40 hover:text-red-500 hover:bg-red-50 rounded-md transition-all opacity-0 group-hover:opacity-100"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </button>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+          
+          <div className="p-3 bg-background border-t border-border">
+            <button 
+              onClick={handleAddItem}
+              className="flex items-center gap-1.5 text-[13px] font-semibold text-primary hover:text-primary/80 transition-colors px-2 py-1 rounded-md hover:bg-primary/5"
+            >
+              <Plus className="w-4 h-4" />
+              إضافة سطر
+            </button>
           </div>
         </div>
 
-        <div className="bg-card border border-border rounded-xl p-6 shadow-sm flex flex-col items-end">
-          <div className="w-full md:w-1/2 space-y-3">
-             <div className="flex justify-between text-sm text-muted-foreground">
-               <span>المجموع الفرعي</span>
-               <span>0 ر.س</span>
-             </div>
-             <div className="flex justify-between text-sm text-muted-foreground">
-               <span>ضريبة القيمة المضافة (15%)</span>
-               <span>0 ر.س</span>
-             </div>
-             <div className="flex justify-between text-lg font-bold text-foreground border-t border-border pt-3 mt-2">
-               <span>الإجمالي</span>
-               <span>0 ر.س</span>
-             </div>
+        {/* Totals Calculation */}
+        <div className="flex justify-end">
+          <div className="bg-card border border-border rounded-xl p-6 shadow-sm w-full md:w-[400px]">
+            <div className="space-y-4">
+               <div className="flex justify-between text-[14px]">
+                 <span className="text-muted-foreground">المجموع الفرعي (بدون ضريبة)</span>
+                 <span className="font-medium tabular-nums">{subtotal.toLocaleString(undefined, { minimumFractionDigits: 2 })} ر.س</span>
+               </div>
+               <div className="flex justify-between text-[14px]">
+                 <span className="text-muted-foreground">ضريبة القيمة المضافة (15%)</span>
+                 <span className="font-medium tabular-nums text-primary">{tax.toLocaleString(undefined, { minimumFractionDigits: 2 })} ر.س</span>
+               </div>
+               <div className="flex justify-between border-t border-border pt-4 mt-2">
+                 <span className="text-base font-bold text-foreground uppercase tracking-wide">الإجمالي المستحق</span>
+                 <span className="text-xl font-black text-foreground tabular-nums tracking-tighter">
+                   {total.toLocaleString(undefined, { minimumFractionDigits: 2 })} ر.س
+                 </span>
+               </div>
+            </div>
           </div>
         </div>
+
       </div>
     </div>
   );
