@@ -7,7 +7,27 @@ import { Field } from '@/components/ui/Field';
 
 export default function AIReader() {
   const [step, setStep] = useState(1);
+  const [subStep, setSubStep] = useState(0); // 0 to 4
   const router = useRouter();
+
+  // Auto-progress simulation for step 2
+  React.useEffect(() => {
+    if (step === 2) {
+      setSubStep(0);
+      const timer1 = setTimeout(() => setSubStep(1), 1000); // OCR done, AI parsing loading
+      const timer2 = setTimeout(() => setSubStep(2), 2500); // AI done, structuring loading
+      const timer3 = setTimeout(() => setSubStep(3), 4000); // structuring done, preview loading
+      const timer4 = setTimeout(() => {
+        setSubStep(4);
+        setStep(3); // Auto move to results
+      }, 5000);
+
+      return () => {
+        clearTimeout(timer1); clearTimeout(timer2);
+        clearTimeout(timer3); clearTimeout(timer4);
+      };
+    }
+  }, [step]);
 
   return (
     <div className="space-y-5">
@@ -94,16 +114,12 @@ export default function AIReader() {
           <h2 className="text-[16px] font-semibold text-foreground mb-2">جاري تحليل الملف...</h2>
           <p className="text-[13px] text-muted-foreground mb-8">الذكاء الاصطناعي يستخرج البيانات الآن</p>
           
-          <div className="max-w-md mx-auto space-y-2">
-            <ProcessStep label="استخراج النص من الملف (OCR)" done />
-            <ProcessStep label="تحليل البيانات بالـ Claude AI" loading />
-            <ProcessStep label="هيكلة البيانات في صيغة منظمة" />
-            <ProcessStep label="مراجعة الجودة والدقة" />
+          <div className="max-w-md mx-auto space-y-2 text-right">
+            <ProcessStep label="استخراج النص من الملف (OCR)" done={subStep >= 1} loading={subStep === 0} />
+            <ProcessStep label="تحليل البيانات بالـ Claude AI" done={subStep >= 2} loading={subStep === 1} />
+            <ProcessStep label="هيكلة البيانات في صيغة منظمة" done={subStep >= 3} loading={subStep === 2} />
+            <ProcessStep label="مراجعة الجودة والدقة" done={subStep >= 4} loading={subStep === 3} />
           </div>
-          
-          <button onClick={() => setStep(3)} className="mt-8 h-9 px-4 bg-primary hover:bg-primary text-primary-foreground rounded-md text-[12px] font-medium">
-            عرض النتائج (محاكاة)
-          </button>
         </div>
       )}
 
