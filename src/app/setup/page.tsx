@@ -89,6 +89,7 @@ export default function SetupPage() {
 
       // نرسل مباشرة بدون phone (العمود غير موجود في DB بعد)
       const { data, error } = await supabase.from('entities').insert({
+        user_id: user.id,
         name: newEntity.name.trim(),
         short_name: newEntity.name.trim().substring(0, 3),
         legal_type: 'مؤسسة فردية',
