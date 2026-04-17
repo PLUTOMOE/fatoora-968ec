@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { useTranslation } from '@/hooks/useTranslation';
 import { Download, Plus, Search, Users, MoreHorizontal, Loader2, Sparkles } from 'lucide-react';
 import { FilterButton } from '@/components/ui/FilterButton';
@@ -10,6 +11,7 @@ import { QuickAddCustomerModal } from '@/components/ui/QuickAddCustomerModal';
 
 export default function CustomersList() {
   const { t } = useTranslation();
+  const router = useRouter();
   const { activeEntity } = useStore();
   const [customers, setCustomers] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -57,7 +59,7 @@ export default function CustomersList() {
             <Download className="w-3.5 h-3.5" />
             <span>تصدير CSV</span>
           </button>
-          <button onClick={() => setModalMode('normal')} className="flex items-center gap-1.5 h-8 px-3 bg-primary text-primary-foreground rounded-md text-[12px] font-medium hover:opacity-90">
+          <button onClick={() => router.push('/customers/new')} className="flex items-center gap-1.5 h-8 px-3 bg-primary text-primary-foreground rounded-md text-[12px] font-medium hover:opacity-90">
             <Plus className="w-3.5 h-3.5" />
             <span className="hidden sm:inline">{t('pages.customers.add')}</span>
           </button>
@@ -94,7 +96,7 @@ export default function CustomersList() {
             <div className="flex flex-col items-center justify-center h-60 text-muted-foreground">
               <Users className="w-8 h-8 text-muted-foreground/40 mb-3" />
               <p className="text-[13px]">لا يوجد عملاء مضافين في الكيان الحالي</p>
-              <button onClick={() => setModalMode('normal')} className="mt-4 text-[12px] text-[#5B5BD6] font-medium hover:underline">
+              <button onClick={() => router.push('/customers/new')} className="mt-4 text-[12px] text-[#5B5BD6] font-medium hover:underline">
                 أضف عميلك الأول الآن
               </button>
             </div>
