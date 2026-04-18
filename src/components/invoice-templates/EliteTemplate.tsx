@@ -8,157 +8,229 @@ export function EliteTemplate({ entity, customer, items, invoice, settings, type
   const titleText = isQuotation ? t.quotation : t.invoice;
   const isRTL = language === 'ar';
   
-  const colors = {
-    surface: '#ffffff',
-    onSurface: '#151b2d',
-    secondary: '#565e74',
-    onSurfaceVariant: '#434656',
-    outlineVariant: '#c3c5d9',
-    primary: '#003dc7',
-    primaryContainer: '#0051ff',
-    surfaceContainerLow: '#f2f3ff',
-  };
-
   return (
-    <div className="bg-white rounded-xl shadow-[0_48px_64px_rgba(21,27,45,0.04)] overflow-hidden w-full max-w-[900px] mx-auto text-left" dir={isRTL ? 'rtl' : 'ltr'} style={{ fontFamily: 'Inter, system-ui, sans-serif', color: colors.onSurface }}>
+    <div className="bg-white w-full max-w-[900px] mx-auto" dir={isRTL ? 'rtl' : 'ltr'} style={{ fontFamily: "'Inter', 'Tajawal', system-ui, sans-serif", color: '#1a1d2e' }}>
       
-      {/* Document Header */}
-      <div className="p-12 lg:p-16 border-b" style={{ borderColor: colors.surfaceContainerLow }}>
-        <div className="flex justify-between items-start mb-16">
-          <div>
-            <h1 className="text-4xl font-black tracking-tighter mb-2 uppercase">{titleText}</h1>
-            <p className="text-sm font-medium" style={{ color: colors.secondary }}>{t.reference} {invoice.number}</p>
-          </div>
-          <div className={`flex flex-col ${isRTL ? 'items-start text-left' : 'items-end text-right'}`}>
-            {entity.logo_url ? (
-               <img src={entity.logo_url} alt="Logo" className="max-w-[150px] max-h-16 object-contain" />
-            ) : (
-               <span className="text-2xl font-black tracking-tighter uppercase">{entity.name}</span>
-            )}
-            {entity.cr_number && <p className="text-xs mt-2" style={{ color: colors.onSurfaceVariant }}>{t.cr} {entity.cr_number}</p>}
-            {entity.tax_number && <p className="text-xs" style={{ color: colors.onSurfaceVariant }}>{t.vat} {entity.tax_number}</p>}
-          </div>
+      {/* ═══════ HEADER ═══════ */}
+      <div className="relative" style={{ background: 'linear-gradient(135deg, #0a1628 0%, #162544 40%, #1a3a6b 100%)' }}>
+        {/* Decorative shapes */}
+        <div className="absolute inset-0 overflow-hidden opacity-10">
+          <div className="absolute -top-20 -right-20 w-80 h-80 rounded-full" style={{ background: 'radial-gradient(circle, rgba(255,255,255,0.15) 0%, transparent 70%)' }} />
+          <div className="absolute -bottom-10 -left-10 w-60 h-60 rounded-full" style={{ background: 'radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%)' }} />
         </div>
 
-        <div className="grid grid-cols-2 gap-12">
-          <div>
-            <h3 className="text-xs font-bold uppercase tracking-[0.05em] mb-4 border-b pb-2" style={{ color: colors.secondary, borderColor: colors.surfaceContainerLow }}>{t.preparedFor}</h3>
-            <p className="text-lg font-bold">{customer.name}</p>
-            {customer.address && <p className="text-sm mt-1" style={{ color: colors.onSurfaceVariant }}>{customer.address}</p>}
-            {customer.phone && <p className="text-sm mt-1" style={{ color: colors.onSurfaceVariant }}>{customer.phone}</p>}
-            {customer.tax_number && <p className="text-sm mt-1" style={{ color: colors.onSurfaceVariant }}>{t.vat} {customer.tax_number}</p>}
-          </div>
-          <div>
-            <h3 className="text-xs font-bold uppercase tracking-[0.05em] mb-4 border-b pb-2" style={{ color: colors.secondary, borderColor: colors.surfaceContainerLow }}>{t.details}</h3>
-            <div className="flex justify-between text-sm mt-1">
-               <span style={{ color: colors.onSurfaceVariant }}>{t.dateOfIssue}</span>
-               <span className="font-medium">{invoice.date}</span>
+        <div className="relative px-10 py-8">
+          <div className="flex justify-between items-start">
+            {/* Logo & Company — BIG */}
+            <div className="flex items-center gap-5">
+              {entity.logo_url ? (
+                <div className="bg-white rounded-2xl p-3 shadow-lg" style={{ minWidth: 80 }}>
+                  <img src={entity.logo_url} alt="Logo" className="w-20 h-20 object-contain" />
+                </div>
+              ) : (
+                <div className="w-20 h-20 bg-white/10 backdrop-blur rounded-2xl flex items-center justify-center border border-white/20">
+                  <span className="text-3xl font-black text-white">{entity.name?.charAt(0)}</span>
+                </div>
+              )}
+              <div>
+                <h2 className="text-xl font-bold text-white mb-1">{entity.name}</h2>
+                {entity.address && <p className="text-xs text-blue-200/80 mb-0.5">{entity.address}</p>}
+                {entity.phone && <p className="text-xs text-blue-200/80">{entity.phone}</p>}
+                <div className="flex items-center gap-3 mt-2">
+                  {entity.cr_number && (
+                    <span className="text-[10px] bg-white/10 text-blue-100 px-2 py-0.5 rounded-full border border-white/10">
+                      {t.cr}: {entity.cr_number}
+                    </span>
+                  )}
+                  {entity.tax_number && (
+                    <span className="text-[10px] bg-white/10 text-blue-100 px-2 py-0.5 rounded-full border border-white/10">
+                      {t.vat}: {entity.tax_number}
+                    </span>
+                  )}
+                </div>
+              </div>
             </div>
-            {invoice.due_date && (
-               <div className="flex justify-between text-sm mt-1">
-                 <span style={{ color: colors.onSurfaceVariant }}>{t.validUntilDue}</span>
-                 <span className="font-medium">{invoice.due_date}</span>
-               </div>
-            )}
+
+            {/* Document Type & Number */}
+            <div className={`text-${isRTL ? 'left' : 'right'}`}>
+              <h1 className="text-3xl font-black text-white tracking-tight mb-2">{titleText}</h1>
+              <div className="bg-white/10 backdrop-blur rounded-xl px-5 py-3 border border-white/15">
+                <div className="text-[10px] text-blue-200/70 mb-0.5">{t.reference}</div>
+                <div className="text-lg font-bold text-white font-mono tracking-wider">{invoice.number}</div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
 
-      {/* Service Ledger */}
-      <div className="p-12 lg:p-16">
-        <h3 className="text-xs font-bold uppercase tracking-[0.05em] mb-8" style={{ color: colors.secondary }}>{t.serviceBreakdown}</h3>
-        
-        <div className="space-y-2">
-          {/* Header Row */}
-          <div className="grid grid-cols-12 gap-4 pb-4 border-b text-xs font-bold uppercase tracking-wider" style={{ borderColor: `${colors.outlineVariant}40`, color: colors.secondary }}>
-            <div className="col-span-5">{t.description}</div>
-            <div className="col-span-2 text-center">{t.qty}</div>
-            <div className="col-span-2 text-center">{t.unitPrice}</div>
-            <div className="col-span-1 text-center">{t.vatPercent}</div>
-            <div className={`col-span-2 ${isRTL ? 'text-left' : 'text-right'}`}>{t.total}</div>
+      {/* ═══════ INFO CARDS ═══════ */}
+      <div className="px-10 -mt-5 relative z-10">
+        <div className="grid grid-cols-3 gap-4">
+          {/* Customer Card */}
+          <div className="bg-white rounded-xl border border-gray-100 shadow-lg shadow-gray-100/50 p-5 col-span-2">
+            <div className="flex items-center gap-2 mb-3">
+              <div className="w-6 h-6 rounded-lg bg-blue-50 flex items-center justify-center">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+              </div>
+              <h3 className="text-[10px] font-bold uppercase tracking-widest text-gray-400">{t.preparedFor}</h3>
+            </div>
+            <p className="text-base font-bold text-gray-800 mb-1">{customer.name || '—'}</p>
+            {customer.address && <p className="text-xs text-gray-500 mb-0.5">{customer.address}</p>}
+            {customer.phone && <p className="text-xs text-gray-500 mb-0.5">{customer.phone}</p>}
+            {customer.tax_number && (
+              <p className="text-xs text-gray-500 mt-1.5 bg-gray-50 inline-block px-2 py-0.5 rounded">
+                {t.vat}: {customer.tax_number}
+              </p>
+            )}
           </div>
 
-          {/* Line Items */}
-          {items.map((item, idx) => {
-             const rowBg = idx % 2 === 0 ? '#ffffff' : colors.surfaceContainerLow;
-             const itemTotal = item.qty * item.price;
-             const taxAmount = itemTotal * (item.tax_rate / 100);
-             return (
-               <div key={idx} className="grid grid-cols-12 gap-4 py-6 px-4 rounded-lg transition-all duration-300 hover:shadow-[0_8px_24px_rgba(21,27,45,0.04)] hover:scale-[1.005]" style={{ backgroundColor: rowBg }}>
-                 <div className="col-span-5">
-                   <p className="font-bold text-sm tracking-tight">{item.name}</p>
-                 </div>
-                 <div className="col-span-2 text-center text-sm font-medium" style={{ color: colors.onSurfaceVariant }}>{item.qty}</div>
-                 <div className="col-span-2 text-center text-sm font-medium" style={{ color: colors.onSurfaceVariant }}>{item.price.toLocaleString()}</div>
-                 <div className="col-span-1 text-center text-xs font-medium mt-0.5" style={{ color: colors.secondary }}>{item.tax_rate}%</div>
-                 <div className={`col-span-2 text-sm font-bold ${isRTL ? 'text-left' : 'text-right'}`}>{(itemTotal + taxAmount).toLocaleString()}</div>
-               </div>
-             );
-          })}
+          {/* Dates Card */}
+          <div className="bg-white rounded-xl border border-gray-100 shadow-lg shadow-gray-100/50 p-5">
+            <div className="flex items-center gap-2 mb-3">
+              <div className="w-6 h-6 rounded-lg bg-blue-50 flex items-center justify-center">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+              </div>
+              <h3 className="text-[10px] font-bold uppercase tracking-widest text-gray-400">{t.details}</h3>
+            </div>
+            <div className="space-y-3">
+              <div>
+                <div className="text-[10px] text-gray-400 mb-0.5">{t.dateOfIssue}</div>
+                <div className="text-sm font-semibold text-gray-800">{invoice.date}</div>
+              </div>
+              {invoice.due_date && (
+                <div>
+                  <div className="text-[10px] text-gray-400 mb-0.5">{t.validUntilDue}</div>
+                  <div className="text-sm font-semibold text-gray-800">{invoice.due_date}</div>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* ═══════ ITEMS TABLE ═══════ */}
+      <div className="px-10 mt-8">
+        <div className="flex items-center gap-2 mb-4">
+          <div className="w-1 h-5 bg-blue-600 rounded-full" />
+          <h3 className="text-xs font-bold uppercase tracking-widest text-gray-500">{t.serviceBreakdown}</h3>
         </div>
 
-        {/* Totals Section */}
-        <div className={`mt-16 flex ${isRTL ? 'justify-start' : 'justify-end'}`}>
-          <div className="w-full max-w-sm space-y-4">
+        <div className="border border-gray-100 rounded-xl overflow-hidden shadow-sm">
+          <table className="w-full">
+            <thead>
+              <tr style={{ background: 'linear-gradient(135deg, #f0f4ff 0%, #f8f9ff 100%)' }}>
+                <th className="text-right text-[10px] font-bold uppercase tracking-wider text-gray-500 px-4 py-3 w-8">#</th>
+                <th className="text-right text-[10px] font-bold uppercase tracking-wider text-gray-500 px-4 py-3">{t.description}</th>
+                <th className="text-center text-[10px] font-bold uppercase tracking-wider text-gray-500 px-4 py-3 w-16">{t.qty}</th>
+                <th className="text-center text-[10px] font-bold uppercase tracking-wider text-gray-500 px-4 py-3 w-24">{t.unitPrice}</th>
+                <th className="text-center text-[10px] font-bold uppercase tracking-wider text-gray-500 px-4 py-3 w-16">{t.vatPercent}</th>
+                <th className={`text-[10px] font-bold uppercase tracking-wider text-gray-500 px-4 py-3 w-24 ${isRTL ? 'text-left' : 'text-right'}`}>{t.total}</th>
+              </tr>
+            </thead>
+            <tbody>
+              {items.map((item, idx) => {
+                const lineTotal = item.qty * item.price;
+                const lineTax = lineTotal * (item.tax_rate / 100);
+                return (
+                  <tr key={idx} className="border-t border-gray-50 hover:bg-blue-50/30 transition-colors">
+                    <td className="px-4 py-4 text-xs text-gray-300 font-mono">{idx + 1}</td>
+                    <td className="px-4 py-4">
+                      <span className="text-sm font-semibold text-gray-800">{item.name}</span>
+                    </td>
+                    <td className="px-4 py-4 text-sm text-center text-gray-600 tabular-nums">{item.qty}</td>
+                    <td className="px-4 py-4 text-sm text-center text-gray-600 tabular-nums">{item.price.toLocaleString()}</td>
+                    <td className="px-4 py-4 text-xs text-center text-gray-400">{item.tax_rate}%</td>
+                    <td className={`px-4 py-4 text-sm font-bold text-gray-800 tabular-nums ${isRTL ? 'text-left' : 'text-right'}`}>
+                      {(lineTotal + lineTax).toLocaleString()}
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      {/* ═══════ TOTALS ═══════ */}
+      <div className={`px-10 mt-6 flex ${isRTL ? 'justify-start' : 'justify-end'}`}>
+        <div className="w-80">
+          <div className="bg-gray-50 rounded-xl p-5 space-y-3">
             <div className="flex justify-between text-sm">
-              <span style={{ color: colors.onSurfaceVariant }}>{t.subtotal}</span>
-              <span className="font-medium">{invoice.subtotal.toLocaleString()}</span>
+              <span className="text-gray-500">{t.subtotal}</span>
+              <span className="font-medium tabular-nums">{invoice.subtotal.toLocaleString()}</span>
             </div>
             {invoice.discount > 0 && (
               <div className="flex justify-between text-sm">
                 <span className="text-red-500">{t.discount}</span>
-                <span className="font-medium text-red-500">-{invoice.discount.toLocaleString()}</span>
+                <span className="font-medium text-red-500 tabular-nums">-{invoice.discount.toLocaleString()}</span>
               </div>
             )}
-            <div className="flex justify-between text-sm border-b pb-4" style={{ borderColor: `${colors.outlineVariant}40` }}>
-              <span style={{ color: colors.onSurfaceVariant }}>{t.totalVat}</span>
-              <span className="font-medium">{invoice.tax.toLocaleString()}</span>
+            <div className="flex justify-between text-sm pb-3 border-b border-gray-200">
+              <span className="text-gray-500">{t.totalVat}</span>
+              <span className="font-medium tabular-nums">{invoice.tax.toLocaleString()}</span>
             </div>
-            
-            <div className="flex justify-between items-center pt-4">
-              <span className="text-xs font-bold uppercase tracking-[0.05em]" style={{ color: colors.secondary }}>{t.grandTotal}</span>
-              <span className="text-4xl font-black tracking-tighter" style={{ 
-                background: `linear-gradient(${isRTL ? 'to bottom left' : 'to bottom right'}, ${colors.primary}, ${colors.primaryContainer})`,
-                WebkitBackgroundClip: 'text',
-                WebkitTextFillColor: 'transparent'
-              }}>
-                {invoice.total.toLocaleString()}
-              </span>
+            <div className="flex justify-between items-center pt-1">
+              <span className="text-xs font-bold uppercase tracking-wider text-gray-500">{t.grandTotal}</span>
+              <div className={isRTL ? 'text-left' : 'text-right'}>
+                <span className="text-2xl font-black tabular-nums" style={{ 
+                  background: 'linear-gradient(135deg, #0a1628 0%, #1a3a6b 100%)',
+                  WebkitBackgroundClip: 'text',
+                  WebkitTextFillColor: 'transparent'
+                }}>
+                  {invoice.total.toLocaleString()}
+                </span>
+                <div className="text-[10px] text-gray-400 mt-0.5">{t.currency}</div>
+              </div>
             </div>
-            <p className={`text-xs mt-2 ${isRTL ? 'text-left' : 'text-right'}`} style={{ color: colors.onSurfaceVariant }}>{t.currency}</p>
           </div>
         </div>
-
-        {/* Notes & Footer with Stamps */}
-        <div className="mt-24 pt-8 border-t" style={{ borderColor: colors.surfaceContainerLow }}>
-          {settings.notes && (
-             <div className="mb-8">
-                <h4 className="text-xs font-bold uppercase tracking-[0.05em] mb-4" style={{ color: colors.secondary }}>{t.termsConditions}</h4>
-                <p className="text-xs leading-relaxed max-w-3xl" style={{ color: colors.onSurfaceVariant }}>
-                    {settings.notes}
-                </p>
-             </div>
-          )}
-
-          <div className="flex items-end justify-between mt-12 pt-8 border-t border-gray-100">
-             <div className="flex items-center gap-12">
-               {settings.stamp_url && (
-                 <div className="text-center">
-                   <img src={settings.stamp_url} alt="Stamp" className="w-24 h-24 object-contain opacity-90 mixing-multiply" />
-                   <div className="text-[10px] uppercase font-bold mt-2" style={{ color: colors.outlineVariant }}>{t.companyStamp}</div>
-                 </div>
-               )}
-               {settings.signature_url && (
-                 <div className="text-center">
-                   <img src={settings.signature_url} alt="Signature" className="w-32 h-16 object-contain" />
-                   <div className="text-[10px] uppercase font-bold border-t pt-2 mt-2" style={{ color: colors.outlineVariant, borderColor: colors.surfaceContainerLow }}>{t.authorizedSignature}</div>
-                 </div>
-               )}
-             </div>
-          </div>
-        </div>
-
       </div>
+
+      {/* ═══════ NOTES ═══════ */}
+      {settings.notes && (
+        <div className="px-10 mt-8">
+          <div className="bg-amber-50/60 border border-amber-200/50 rounded-xl p-5">
+            <div className="flex items-center gap-2 mb-2">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#d97706" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14,2 14,8 20,8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+              <h4 className="text-[10px] font-bold uppercase tracking-widest text-amber-700">{t.termsConditions}</h4>
+            </div>
+            <p className="text-xs text-amber-900/80 leading-relaxed whitespace-pre-line">{settings.notes}</p>
+          </div>
+        </div>
+      )}
+
+      {/* ═══════ STAMP & SIGNATURE ═══════ */}
+      {(settings.stamp_url || settings.signature_url) && (
+        <div className="px-10 mt-8">
+          <div className="flex items-end gap-12 pt-6 border-t border-gray-100">
+            {settings.stamp_url && (
+              <div className="text-center">
+                <img src={settings.stamp_url} alt="Stamp" className="w-24 h-24 object-contain opacity-85" style={{ mixBlendMode: 'multiply' }} />
+                <span className="text-[9px] text-gray-400 uppercase font-bold mt-2 block tracking-wider">{t.companyStamp}</span>
+              </div>
+            )}
+            {settings.signature_url && (
+              <div className="text-center">
+                <img src={settings.signature_url} alt="Signature" className="w-32 h-16 object-contain" />
+                <div className="border-t border-gray-200 mt-2 pt-2">
+                  <span className="text-[9px] text-gray-400 uppercase font-bold tracking-wider">{t.authorizedSignature}</span>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* ═══════ FOOTER ═══════ */}
+      <div className="mt-10 px-10 py-4 border-t border-gray-100">
+        <div className="flex justify-between items-center text-[9px] text-gray-400">
+          <span>{entity.name}</span>
+          <span>{invoice.number} · {invoice.date}</span>
+        </div>
+      </div>
+
+      {/* Bottom accent */}
+      <div className="h-1.5" style={{ background: 'linear-gradient(135deg, #0a1628 0%, #162544 40%, #1a3a6b 100%)' }} />
     </div>
   );
 }

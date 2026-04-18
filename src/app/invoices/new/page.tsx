@@ -40,6 +40,7 @@ function InvoiceFormContent() {
   // Quotation Data States
   const [customerInfo, setCustomerInfo] = useState({ name: '', tax_number: '', address: '' });
   const [invoiceDates, setInvoiceDates] = useState({ date: new Date().toISOString().split('T')[0], due_date: '' });
+  const [docNumber, setDocNumber] = useState(`INV-${new Date().getFullYear()}-001`);
   const [showStamp, setShowStamp] = useState(false);
   const [showSignature, setShowSignature] = useState(false);
   const [notes, setNotes] = useState('');
@@ -137,7 +138,7 @@ function InvoiceFormContent() {
     },
     items: items.length > 0 && items[0].name ? items : [{ name: 'بند فارغ', qty: 0, price: 0, tax_rate: 0 }],
     invoice: {
-      number: 'INV-2026-001',
+      number: docNumber,
       date: invoiceDates.date,
       due_date: invoiceDates.due_date,
       subtotal,
@@ -255,7 +256,17 @@ function InvoiceFormContent() {
         {/* Customer Information */}
         <div className="bg-card border border-border rounded-xl p-6 shadow-sm">
           <h2 className="text-sm font-bold text-foreground mb-4">بيانات العميل والإصدار</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
+            <div className="space-y-1.5">
+              <label className="text-xs font-semibold text-muted-foreground">رقم الفاتورة (تسلسلي)</label>
+              <input 
+                type="text" 
+                value={docNumber}
+                onChange={(e) => setDocNumber(e.target.value)}
+                placeholder="INV-2026-001" 
+                className="w-full bg-background border border-border rounded-lg px-4 py-2.5 text-sm font-mono outline-none focus:border-primary" 
+              />
+            </div>
             <div className="lg:col-span-2 space-y-1.5">
               <label className="text-xs font-semibold text-muted-foreground">اسم العميل (مطلوب)</label>
               <CustomerAutocomplete
