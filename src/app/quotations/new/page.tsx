@@ -10,6 +10,8 @@ import { ClassicTemplate } from '@/components/invoice-templates/ClassicTemplate'
 import { ModernTemplate } from '@/components/invoice-templates/ModernTemplate';
 import { MinimalTemplate } from '@/components/invoice-templates/MinimalTemplate';
 import { EliteTemplate } from '@/components/invoice-templates/EliteTemplate';
+import { CorporateTemplate } from '@/components/invoice-templates/CorporateTemplate';
+import { CompactTemplate } from '@/components/invoice-templates/CompactTemplate';
 import { useStore } from '@/store/useStore';
 import { createClient } from '@/lib/supabase/client';
 
@@ -158,6 +160,8 @@ function QuotationFormContent() {
       case 'modern': return <ModernTemplate {...invoiceDataPayload} />;
       case 'minimal': return <MinimalTemplate {...invoiceDataPayload} />;
       case 'elite': return <EliteTemplate {...invoiceDataPayload} />;
+      case 'corporate': return <CorporateTemplate {...invoiceDataPayload} />;
+      case 'compact': return <CompactTemplate {...invoiceDataPayload} />;
       default: return <EliteTemplate {...invoiceDataPayload} />;
     }
   };
@@ -216,13 +220,21 @@ function QuotationFormContent() {
           <h1 className="text-2xl font-bold text-foreground">إنشاء عرض سعر</h1>
         </div>
         <div className="flex items-center gap-3">
-          <button 
-            onClick={() => router.push('/settings/invoicing')}
-            className="flex items-center gap-2 h-10 px-4 rounded-xl text-sm font-medium border border-border bg-card hover:bg-muted transition-colors"
-          >
-            <LayoutTemplate className="w-4 h-4" />
-            إعدادات العرض
-          </button>
+          <div className="relative">
+            <select
+              value={settings.template}
+              onChange={(e) => setSettings((s: any) => ({ ...s, template: e.target.value }))}
+              className="appearance-none flex items-center gap-2 h-10 px-4 pr-8 rounded-xl text-sm font-medium border border-border bg-card hover:bg-muted transition-colors cursor-pointer outline-none"
+            >
+              <option value="elite">⭐ Elite</option>
+              <option value="corporate">🏢 Corporate</option>
+              <option value="compact">📋 Compact</option>
+              <option value="modern">🎨 Modern</option>
+              <option value="classic">📄 Classic</option>
+              <option value="minimal">✏️ Minimal</option>
+            </select>
+            <LayoutTemplate className="w-4 h-4 absolute left-2.5 top-1/2 -translate-y-1/2 text-muted-foreground pointer-events-none" />
+          </div>
           <button 
             onClick={() => setShowPreview(true)}
             className="flex items-center gap-2 h-10 px-4 rounded-xl text-sm font-medium border border-border bg-card hover:bg-muted transition-colors"
