@@ -184,7 +184,7 @@ function InvoiceFormContent() {
             </div>
           </div>
           <div className="flex items-center gap-3">
-            <button className="flex items-center gap-2 h-10 px-4 rounded-xl text-sm font-medium border border-border bg-card hover:bg-muted transition-colors">
+            <button onClick={() => window.print()} className="flex items-center gap-2 h-10 px-4 rounded-xl text-sm font-medium border border-border bg-card hover:bg-muted transition-colors">
               <Printer className="w-4 h-4" />
               طباعة
             </button>

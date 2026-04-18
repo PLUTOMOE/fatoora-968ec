@@ -135,3 +135,67 @@ button, a, input, select { transition: all 0.12s ease; }
   0%, 100% { transform: translateY(0px) rotate(0deg); }
   50% { transform: translateY(-25px) rotate(1deg); }
 }
+
+/* ═══════ PRINT STYLES ═══════ */
+@media print {
+  /* Hide everything except the template */
+  aside,
+  nav,
+  header,
+  .no-print,
+  button {
+    display: none !important;
+  }
+
+  /* Reset layout */
+  body {
+    background: white !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+    color-adjust: exact !important;
+  }
+
+  main {
+    margin: 0 !important;
+    padding: 0 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+
+  /* Remove all margins and padding from parent containers */
+  main > div,
+  main > div > div {
+    margin: 0 !important;
+    padding: 0 !important;
+    max-width: 100% !important;
+  }
+
+  /* The template container */
+  .min-w-\[750px\] {
+    min-width: unset !important;
+    width: 100% !important;
+    border: none !important;
+  }
+
+  /* Remove shadows and borders for clean print */
+  .shadow-sm, .shadow-md, .shadow-lg, .shadow-xl, .shadow-2xl {
+    box-shadow: none !important;
+  }
+
+  .rounded-xl, .rounded-lg, .overflow-hidden {
+    border-radius: 0 !important;
+  }
+
+  /* Ensure backgrounds print */
+  * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  @page {
+    size: A4;
+    margin: 0.5cm;
+  }
+}
