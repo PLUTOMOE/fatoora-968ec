@@ -76,15 +76,15 @@ export function ClientLayout({ children }: { children: React.ReactNode }) {
 
   return (
     <>
-      <Sidebar />
-      <div className={`transition-[margin] duration-300 ml-0 mr-0 ${sidebarCollapsed ? 'lg:mr-[60px]' : 'lg:mr-[240px]'}`}>
-        <TopBar />
-        <main className="px-4 lg:px-8 py-6 max-w-[1400px] overflow-x-hidden">
+      <div className="print:hidden"><Sidebar /></div>
+      <div className={`transition-[margin] duration-300 ml-0 mr-0 ${sidebarCollapsed ? 'lg:mr-[60px]' : 'lg:mr-[240px]'} print:m-0`}>
+        <div className="print:hidden"><TopBar /></div>
+        <main className="px-4 lg:px-8 py-6 max-w-[1400px] overflow-x-hidden print:p-0 print:overflow-visible">
           {children}
         </main>
       </div>
-      <CommandPalette />
-      <EntitySwitcher />
+      <div className="print:hidden"><CommandPalette /></div>
+      <div className="print:hidden"><EntitySwitcher /></div>
     </>
   );
 }

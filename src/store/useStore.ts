@@ -3,6 +3,9 @@ import { create } from 'zustand';
 interface Entity {
   name: string;
   short: string;
+  address?: string;
+  tax_number?: string;
+  cr_number?: string;
 }
 
 interface AppState {

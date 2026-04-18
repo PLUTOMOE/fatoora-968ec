@@ -92,6 +92,7 @@ function InvoiceFormContent() {
       try {
         const cData = JSON.parse(newCustomerStr);
         setCustomerInfo({
+          id: cData.id || '',
           name: cData.name || '',
           tax_number: cData.tax_number || '',
           address: cData.address || ''

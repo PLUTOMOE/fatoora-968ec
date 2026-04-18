@@ -21,7 +21,7 @@ import {
 } from "@/lib/db";
 import { formatCurrency } from "@/lib/format";
 import { getSessionUserId } from "@/lib/session";
-import { buildZatcaQrPayload } from "@/lib/zatca";
+import { getZatcaQRCode } from "@/lib/zatca";
 
 export const dynamic = "force-dynamic";
 
@@ -177,13 +177,13 @@ export default async function WorkspacePage({
     await Promise.all(
       invoices.map(async (invoice) => {
         const qrCodeUrl = await QRCode.toDataURL(
-          buildZatcaQrPayload({
-            sellerName: invoice.company_name,
-            taxNumber: invoice.company_tax_number ?? "",
-            invoiceDate: invoice.issue_date,
-            invoiceTotal: invoice.grand_total,
-            vatTotal: invoice.vat_total,
-          }),
+          getZatcaQRCode(
+            invoice.company_name,
+            invoice.company_tax_number ?? "",
+            invoice.issue_date,
+            invoice.grand_total.toString(),
+            invoice.vat_total.toString()
+          ),
           { margin: 1, width: 140 },
         );
 

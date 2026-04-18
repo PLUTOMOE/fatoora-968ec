@@ -5,11 +5,11 @@ import QRCode from "qrcode";
 import { getZatcaQRCode } from "@/lib/zatca";
 
 interface ZatcaQRCodeProps {
-  sellerName: string;
-  vatNumber: string;
-  timestamp: string;
-  invoiceTotal: string;
-  vatTotal: string;
+  sellerName?: string;
+  vatNumber?: string;
+  timestamp?: string;
+  invoiceTotal?: string;
+  vatTotal?: string;
 }
 
 export function ZatcaQRCode({ sellerName, vatNumber, timestamp, invoiceTotal, vatTotal }: ZatcaQRCodeProps) {
@@ -28,7 +28,7 @@ export function ZatcaQRCode({ sellerName, vatNumber, timestamp, invoiceTotal, va
           vatTotal || '0.00'
         );
         const url = await QRCode.toDataURL(base64TLV, { 
-          errorCorrectionLevel: 'M', 
+          errorCorrectionLevel: 'medium', 
           margin: 1,
           width: 120 
         });
