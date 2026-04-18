@@ -115,29 +115,44 @@ export default function SetupPage() {
     setIsSubmitting(true);
     try {
       const supabase = createClient();
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) throw new Error("No user found");
+      
+      // استخدام getSession للتأكد من وجود جلسة صالحة
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session?.user) {
+        alert('انتهت الجلسة. يرجى تسجيل الدخول مرة أخرى.');
+        router.push('/login');
+        return;
+      }
 
-      // نرسل مباشرة بدون phone (العمود غير موجود في DB بعد)
-      const { data, error } = await supabase.from('entities').insert({
-        user_id: user.id,
+      const payload: Record<string, any> = {
+        user_id: session.user.id,
         name: newEntity.name.trim(),
-        short_name: newEntity.name.trim().substring(0, 3),
-        legal_type: 'مؤسسة فردية',
-        tax_number: newEntity.tax_number || null,
-        cr_number: newEntity.cr_number || null,
-        address: newEntity.address || null,
-        logo_url: null,
         status: 'active'
-      }).select().single();
+      };
+      
+      // أضف الحقول الاختيارية فقط إذا كانت غير فارغة
+      if (newEntity.address) payload.address = newEntity.address;
+      if (newEntity.phone) payload.phone = newEntity.phone;
+      if (newEntity.tax_number) payload.tax_number = newEntity.tax_number;
+      if (newEntity.cr_number) payload.cr_number = newEntity.cr_number;
+      payload.short_name = newEntity.name.trim().substring(0, 3);
+      payload.legal_type = 'مؤسسة فردية';
 
-      if (error) throw error;
+      console.log('Inserting entity with user_id:', session.user.id);
+      const { data, error } = await supabase.from('entities').insert(payload).select().single();
+
+      if (error) {
+        console.error('Supabase insert error:', error.code, error.message, error.details, error.hint);
+        alert(`فشل حفظ الشركة: ${error.message}\n\nالكود: ${error.code}\nالتفاصيل: ${error.details || 'لا توجد'}`);
+        setIsSubmitting(false);
+        return;
+      }
 
       setActiveEntity({ name: data.name, short: data.short_name || data.name.substring(0, 3) });
       router.push('/');
     } catch (error: any) {
       console.error('Error creating company:', error);
-      alert(`حدث خطأ: ${error?.message || 'الرجاء المحاولة مرة أخرى'}`);
+      alert(`حدث خطأ غير متوقع: ${error?.message || 'الرجاء المحاولة مرة أخرى'}`);
     } finally {
       setIsSubmitting(false);
     }
