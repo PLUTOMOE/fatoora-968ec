@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { ChevronRight, Save, LayoutTemplate, Eye, X, ArrowRight, Printer, Plus, Trash2, GripVertical } from 'lucide-react';
+import { ChevronRight, Save, LayoutTemplate, Eye, X, ArrowRight, Printer, Plus, Trash2, GripVertical, Stamp, PenTool, Upload, ImageIcon } from 'lucide-react';
 import { CustomerAutocomplete, CustomerData } from '@/components/ui/CustomerAutocomplete';
 import { ProductAutocomplete, ProductData } from '@/components/ui/ProductAutocomplete';
 import { ClassicTemplate } from '@/components/invoice-templates/ClassicTemplate';
@@ -37,6 +37,8 @@ function InvoiceFormContent() {
   // Quotation Data States
   const [customerInfo, setCustomerInfo] = useState({ name: '', tax_number: '', address: '' });
   const [invoiceDates, setInvoiceDates] = useState({ date: new Date().toISOString().split('T')[0], due_date: '' });
+  const [stampUrl, setStampUrl] = useState<string>('');
+  const [signatureUrl, setSignatureUrl] = useState<string>('');
   const [items, setItems] = useState<InvoiceItem[]>([
     { name: '', description: '', qty: 1, price: 0, tax_rate: 15 }
   ]);
@@ -140,8 +142,8 @@ function InvoiceFormContent() {
       total
     },
     settings: {
-      stamp_url: settings.stamp_url,
-      signature_url: settings.signature_url,
+      stamp_url: stampUrl || settings.stamp_url,
+      signature_url: signatureUrl || settings.signature_url,
       notes: settings.default_notes,
       template: settings.template
     },
@@ -421,6 +423,86 @@ function InvoiceFormContent() {
                    {total.toLocaleString(undefined, { minimumFractionDigits: 2 })} ر.س
                  </span>
                </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Stamp & Signature Section */}
+        <div className="bg-card border border-border rounded-xl p-6 shadow-sm">
+          <h2 className="text-sm font-bold text-foreground mb-4">التوقيع والختم (اختياري)</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {/* Signature */}
+            <div className="space-y-3">
+              <label className="text-xs font-semibold text-muted-foreground flex items-center gap-1.5">
+                <PenTool className="w-3.5 h-3.5" />
+                التوقيع
+              </label>
+              {signatureUrl ? (
+                <div className="relative group border border-border rounded-lg p-4 bg-background flex items-center justify-center min-h-[100px]">
+                  <img src={signatureUrl} alt="التوقيع" className="max-h-[80px] object-contain" />
+                  <button
+                    onClick={() => setSignatureUrl('')}
+                    className="absolute top-2 left-2 w-6 h-6 rounded-full bg-red-500/10 text-red-500 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-500/20"
+                  >
+                    <X className="w-3.5 h-3.5" />
+                  </button>
+                </div>
+              ) : (
+                <label className="flex flex-col items-center justify-center gap-2 border-2 border-dashed border-border rounded-lg p-6 cursor-pointer hover:border-primary/50 hover:bg-primary/5 transition-all min-h-[100px]">
+                  <Upload className="w-5 h-5 text-muted-foreground" />
+                  <span className="text-xs text-muted-foreground">اضغط لرفع صورة التوقيع</span>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    className="hidden"
+                    onChange={(e) => {
+                      const file = e.target.files?.[0];
+                      if (file) {
+                        const reader = new FileReader();
+                        reader.onloadend = () => setSignatureUrl(reader.result as string);
+                        reader.readAsDataURL(file);
+                      }
+                    }}
+                  />
+                </label>
+              )}
+            </div>
+
+            {/* Stamp */}
+            <div className="space-y-3">
+              <label className="text-xs font-semibold text-muted-foreground flex items-center gap-1.5">
+                <Stamp className="w-3.5 h-3.5" />
+                الختم
+              </label>
+              {stampUrl ? (
+                <div className="relative group border border-border rounded-lg p-4 bg-background flex items-center justify-center min-h-[100px]">
+                  <img src={stampUrl} alt="الختم" className="max-h-[80px] object-contain" />
+                  <button
+                    onClick={() => setStampUrl('')}
+                    className="absolute top-2 left-2 w-6 h-6 rounded-full bg-red-500/10 text-red-500 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-500/20"
+                  >
+                    <X className="w-3.5 h-3.5" />
+                  </button>
+                </div>
+              ) : (
+                <label className="flex flex-col items-center justify-center gap-2 border-2 border-dashed border-border rounded-lg p-6 cursor-pointer hover:border-primary/50 hover:bg-primary/5 transition-all min-h-[100px]">
+                  <Upload className="w-5 h-5 text-muted-foreground" />
+                  <span className="text-xs text-muted-foreground">اضغط لرفع صورة الختم</span>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    className="hidden"
+                    onChange={(e) => {
+                      const file = e.target.files?.[0];
+                      if (file) {
+                        const reader = new FileReader();
+                        reader.onloadend = () => setStampUrl(reader.result as string);
+                        reader.readAsDataURL(file);
+                      }
+                    }}
+                  />
+                </label>
+              )}
             </div>
           </div>
         </div>
