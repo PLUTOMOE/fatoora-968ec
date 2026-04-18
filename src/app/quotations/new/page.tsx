@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { ChevronRight, Save, LayoutTemplate, Eye, X, ArrowRight, Printer, Plus, Trash2, GripVertical, Stamp, PenTool, Upload } from 'lucide-react';
+import { ChevronRight, Save, LayoutTemplate, Eye, X, ArrowRight, Printer, Plus, Trash2, GripVertical, Stamp, PenTool, Upload, Loader2 } from 'lucide-react';
 import { CustomerAutocomplete, CustomerData } from '@/components/ui/CustomerAutocomplete';
 import { ProductAutocomplete, ProductData } from '@/components/ui/ProductAutocomplete';
 import { NotesManager } from '@/components/ui/NotesManager';
@@ -38,9 +38,10 @@ function QuotationFormContent() {
   });
 
   // Quotation Data States
-  const [customerInfo, setCustomerInfo] = useState({ name: '', tax_number: '', address: '' });
+  const [customerInfo, setCustomerInfo] = useState({ id: '', name: '', tax_number: '', address: '' });
   const [invoiceDates, setInvoiceDates] = useState({ date: new Date().toISOString().split('T')[0], due_date: '' });
   const [docNumber, setDocNumber] = useState(`Q-${new Date().getFullYear()}-001`);
+  const [isSaving, setIsSaving] = useState(false);
   const [showStamp, setShowStamp] = useState(false);
   const [showSignature, setShowSignature] = useState(false);
   const [notes, setNotes] = useState('');
@@ -167,6 +168,93 @@ function QuotationFormContent() {
     }
   };
 
+  const handleSave = async (isDraft = false) => {
+    if (!entityData?.id) {
+      alert('البيانات غير مكتملة');
+      return;
+    }
+    
+    setIsSaving(true);
+    try {
+      const supabase = createClient();
+      
+      let customerId = customerInfo.id;
+      
+      // If no customer ID but name exists, create the customer
+      if (!customerId && customerInfo.name) {
+        const { data: newCustomer, error: customerError } = await supabase
+          .from('customers')
+          .insert({
+            entity_id: entityData.id,
+            name: customerInfo.name,
+            tax_number: customerInfo.tax_number,
+            address: customerInfo.address,
+            type: 'company'
+          })
+          .select()
+          .single();
+          
+        if (!customerError && newCustomer) {
+          customerId = newCustomer.id;
+        }
+      }
+
+      if (!customerId) {
+        alert('يرجى تحديد أو إدخال بيانات العميل');
+        setIsSaving(false);
+        return;
+      }
+      
+      // Create Invoice (Quotation type)
+      const { data: newInvoice, error: invoiceError } = await supabase
+        .from('invoices')
+        .insert({
+          entity_id: entityData.id,
+          customer_id: customerId,
+          invoice_number: docNumber,
+          type: 'quotation',
+          status: isDraft ? 'draft' : 'pending',
+          issue_date: invoiceDates.date,
+          due_date: invoiceDates.due_date || null,
+          subtotal: subtotal,
+          tax_total: tax,
+          discount: 0,
+          total: total,
+          notes: notes || settings.default_notes
+        })
+        .select()
+        .single();
+        
+      if (invoiceError) throw invoiceError;
+      
+      // Create Items
+      if (newInvoice && items.length > 0) {
+        const itemsToInsert = items.filter(item => item.name).map(item => ({
+          invoice_id: newInvoice.id,
+          description: item.name,
+          quantity: item.qty,
+          unit_price: item.price,
+          tax_rate: item.tax_rate,
+          total: item.qty * item.price * (1 + item.tax_rate / 100)
+        }));
+        
+        if (itemsToInsert.length > 0) {
+          await supabase.from('invoice_items').insert(itemsToInsert);
+        }
+      }
+      
+      // Redirect
+      router.push('/quotations');
+      router.refresh();
+      
+    } catch (error) {
+      console.error("Error saving:", error);
+      alert('حدث خطأ أثناء الحفظ');
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
   if (showPreview) {
     return (
       <div className="space-y-6">
@@ -188,9 +276,13 @@ function QuotationFormContent() {
               <Printer className="w-4 h-4" />
               طباعة
             </button>
-            <button className="flex items-center gap-2 h-10 px-6 rounded-xl text-sm font-semibold bg-primary text-primary-foreground shadow-md transition-all hover:shadow-lg hover:-translate-y-0.5">
-              <Save className="w-4 h-4" />
-              تأكيد وإصدار
+            <button 
+              onClick={() => handleSave(false)}
+              disabled={isSaving}
+              className="flex items-center gap-2 h-10 px-6 rounded-xl text-sm font-semibold bg-primary text-primary-foreground shadow-md transition-all hover:shadow-lg hover:-translate-y-0.5 disabled:opacity-50"
+            >
+              {isSaving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
+              {isSaving ? 'جاري التأكيد...' : 'تأكيد وإصدار'}
             </button>
           </div>
         </div>
@@ -243,9 +335,13 @@ function QuotationFormContent() {
             <Eye className="w-4 h-4 text-primary" />
             معاينة
           </button>
-          <button className="flex items-center gap-2 h-10 px-6 rounded-xl text-sm font-semibold bg-primary text-primary-foreground shadow-md transition-all hover:shadow-lg hover:-translate-y-0.5">
-            <Save className="w-4 h-4" />
-            حفظ وإصدار
+          <button 
+            onClick={() => handleSave(false)}
+            disabled={isSaving}
+            className="flex items-center gap-2 h-10 px-6 rounded-xl text-sm font-semibold bg-primary text-primary-foreground shadow-md transition-all hover:shadow-lg hover:-translate-y-0.5 disabled:opacity-50"
+          >
+            {isSaving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
+            {isSaving ? 'جاري الحفظ...' : 'حفظ وإصدار'}
           </button>
         </div>
       </div>
@@ -275,12 +371,13 @@ function QuotationFormContent() {
                 onChange={(customer, rawName) => {
                   if (customer) {
                     setCustomerInfo({
+                      id: customer.id,
                       name: customer.name,
                       tax_number: customer.tax_number || '',
                       address: customer.address || ''
                     });
                   } else {
-                    setCustomerInfo(prev => ({ ...prev, name: rawName }));
+                    setCustomerInfo(prev => ({ ...prev, name: rawName, id: '' }));
                   }
                 }}
                 onOpenCreateNew={(nameQuery) => {

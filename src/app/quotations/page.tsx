@@ -115,12 +115,12 @@ export default function QuotationsList() {
               </thead>
               <tbody>
                 {data.map((q) => (
-                  <tr key={q.id} className="border-b border-border/50 last:border-0 hover:bg-background transition-colors group text-[13px]">
+                  <tr key={q.id} onClick={() => router.push(`/quotations/${q.id}`)} className="border-b border-border/50 last:border-0 hover:bg-background transition-colors group text-[13px] cursor-pointer">
                     <td className="py-3 px-4 text-center"><input type="checkbox" className="rounded-sm border-border accent-[#5B5BD6] opacity-50 group-hover:opacity-100" /></td>
                     <td className="py-3 px-4">
                       <div className="font-mono font-medium text-foreground">{q.invoice_number}</div>
                     </td>
-                    <td className="py-3 px-4 text-foreground">عميل غير محدد</td>
+                    <td className="py-3 px-4 text-foreground">{q.customers?.name || 'عميل غير محدد'}</td>
                     <td className="py-3 px-4 text-muted-foreground">{new Date(q.created_at).toLocaleDateString('ar-SA')}</td>
                     <td className="py-3 px-4"><StatusPill status={q.status as any} /></td>
                     <td className="py-3 px-4 text-left font-medium text-foreground tabular-nums">{q.total} ر.س</td>

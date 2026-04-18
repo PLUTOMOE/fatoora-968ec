@@ -150,7 +150,7 @@ export default function InvoicesList() {
               </thead>
               <tbody className="text-[13px]">
                 {data.map((row, i) => (
-                  <tr key={i} onClick={() => router.push(`/invoices/${row.invoice_number}`)} className="border-b border-border/50 last:border-0 hover:bg-background transition-colors group cursor-pointer">
+                  <tr key={i} onClick={() => router.push(`/invoices/${row.id}`)} className="border-b border-border/50 last:border-0 hover:bg-background transition-colors group cursor-pointer">
                     <td className="px-3 py-3 font-mono text-[12px]">{row.invoice_number}</td>
                     <td className="px-3 py-3">
                       <span className={`text-[10px] font-medium px-1.5 py-0.5 rounded bg-[#F0F7FF] text-[#1E40AF]`}>
