@@ -58,14 +58,6 @@ export default function AIReader() {
   const handleFileSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
-
-    if (!apiKey) {
-      setShowApiKeyInput(true);
-      setSelectedFile(file);
-      setFileName(file.name);
-      return;
-    }
-
     await processFile(file);
   };
 

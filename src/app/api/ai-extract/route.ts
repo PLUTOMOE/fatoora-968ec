@@ -35,14 +35,17 @@ export async function POST(request: NextRequest) {
   try {
     const formData = await request.formData();
     const file = formData.get('file') as File;
-    const apiKey = formData.get('apiKey') as string;
+    const clientApiKey = formData.get('apiKey') as string;
+    
+    // Use server env key first, fallback to client-provided key
+    const apiKey = process.env.GEMINI_API_KEY || clientApiKey;
     
     if (!file) {
       return NextResponse.json({ error: 'لم يتم رفع ملف' }, { status: 400 });
     }
 
     if (!apiKey) {
-      return NextResponse.json({ error: 'مفتاح API مطلوب. أضفه من الإعدادات.' }, { status: 400 });
+      return NextResponse.json({ error: 'مفتاح API مطلوب. أضفه في ملف .env.local' }, { status: 400 });
     }
 
     // Convert file to base64
