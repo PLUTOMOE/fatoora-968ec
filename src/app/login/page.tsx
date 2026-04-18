@@ -79,33 +79,7 @@ export default function LoginPage() {
   return (
       <div className="bg-[#131b2e] dark:bg-[#0a0f1a] text-[#faf8ff] h-screen overflow-hidden flex items-center justify-center relative selection:bg-[#3d32e6] selection:text-white" dir="rtl">
         
-        {/* Top Controls */}
-        {mounted && (
-        <div className="fixed top-4 left-4 z-50 flex items-center gap-2">
-          {/* Language Toggle */}
-          <button
-            onClick={() => {
-              const newLang = lang === 'ar' ? 'en' : 'ar';
-              setLanguage(newLang);
-              document.documentElement.dir = newLang === 'ar' ? 'rtl' : 'ltr';
-              document.documentElement.lang = newLang;
-            }}
-            className="h-9 px-3 flex items-center gap-1.5 rounded-full bg-white/10 hover:bg-white/20 text-white/80 hover:text-white transition-all backdrop-blur-sm border border-white/10 text-xs font-medium"
-          >
-            <Globe className="w-3.5 h-3.5" />
-            <span>{lang === 'ar' ? 'EN' : 'عربي'}</span>
-          </button>
-          {/* Theme Toggle */}
-          <button
-            onClick={() => setTheme(resolvedTheme === 'dark' ? 'light' : 'dark')}
-            className="w-9 h-9 flex items-center justify-center rounded-full bg-white/10 hover:bg-white/20 text-white/80 hover:text-white transition-all backdrop-blur-sm border border-white/10"
-            aria-label="تبديل الوضع"
-          >
-            {resolvedTheme === 'dark' ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
-          </button>
-        </div>
-        )}
-        
+
         {/* Ambient Light Leaks */}
         <div className="absolute top-[-10%] right-[-5%] w-[800px] h-[800px] bg-[#3d32e6]/20 rounded-full blur-[120px] pointer-events-none"></div>
         <div className="absolute bottom-[-20%] left-[-10%] w-[600px] h-[600px] bg-[#6a1edb]/15 rounded-full blur-[100px] pointer-events-none"></div>
