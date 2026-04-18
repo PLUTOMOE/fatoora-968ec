@@ -265,7 +265,7 @@ export function NotesManager({ docType, value, onChange }: NotesManagerProps) {
   }, []);
 
   return (
-    <div className="bg-card border border-border rounded-xl shadow-sm overflow-hidden">
+    <div className="bg-card border border-border rounded-xl shadow-sm">
       <div className="p-4 border-b border-border bg-muted/30">
         <h2 className="text-sm font-bold text-foreground flex items-center gap-2">
           <StickyNote className="w-4 h-4 text-primary" />
@@ -275,7 +275,7 @@ export function NotesManager({ docType, value, onChange }: NotesManagerProps) {
       
       <div className="p-5 space-y-4">
         {/* Dropdown Row */}
-        <div className="flex flex-col sm:flex-row gap-3">
+        <div className="flex flex-col sm:flex-row gap-3 relative" style={{ zIndex: 40 }}>
           {/* Category Dropdown */}
           <div className="relative flex-1" ref={catRef}>
             <button
@@ -292,7 +292,7 @@ export function NotesManager({ docType, value, onChange }: NotesManagerProps) {
               <ChevronDown className={`w-3.5 h-3.5 text-muted-foreground transition-transform ${isCategoryOpen ? 'rotate-180' : ''}`} />
             </button>
             {isCategoryOpen && (
-              <div className="absolute z-50 w-full mt-1 bg-card border border-border rounded-xl shadow-xl max-h-[250px] overflow-y-auto custom-scrollbar p-1.5 animate-in fade-in slide-in-from-top-2">
+              <div className="absolute z-[9999] w-full mt-1 bg-card border border-border rounded-xl shadow-2xl max-h-[300px] overflow-y-auto p-1.5" style={{ top: '100%' }}>
                 {categoryNames.map(cat => {
                   const customCount = customDbNotes.filter(n => n.category === cat).length;
                   const totalCount = (categories[cat]?.length || 0) + customCount;
@@ -343,7 +343,7 @@ export function NotesManager({ docType, value, onChange }: NotesManagerProps) {
               <ChevronDown className={`w-3.5 h-3.5 text-muted-foreground transition-transform ${isNoteOpen ? 'rotate-180' : ''}`} />
             </button>
             {isNoteOpen && selectedCategory && (
-              <div className="absolute z-50 w-full mt-1 bg-card border border-border rounded-xl shadow-xl max-h-[250px] overflow-y-auto custom-scrollbar p-1.5 animate-in fade-in slide-in-from-top-2">
+              <div className="absolute z-[9999] w-full mt-1 bg-card border border-border rounded-xl shadow-2xl max-h-[300px] overflow-y-auto p-1.5" style={{ top: '100%' }}>
                 {getNotesForCategory(selectedCategory).map((note, i) => {
                   const isAdded = addedNotes.some(n => n.text === note);
                   return (
