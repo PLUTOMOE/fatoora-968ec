@@ -35,17 +35,31 @@ export function CustomerAutocomplete({ value, onChange, onOpenCreateNew }: Custo
 
   // Resolve entity_id from name (once)
   const resolveEntityId = useCallback(async () => {
-    if (!activeEntity?.name) return null;
     try {
       const supabase = createClient();
-      const { data: ent } = await supabase
+      
+      // Try by name first
+      if (activeEntity?.name) {
+        const { data: ent } = await supabase
+          .from('entities')
+          .select('id')
+          .eq('name', activeEntity.name)
+          .single();
+        if (ent) {
+          setEntityId(ent.id);
+          return ent.id;
+        }
+      }
+      
+      // Fallback: get first available entity
+      const { data: firstEnt } = await supabase
         .from('entities')
         .select('id')
-        .eq('name', activeEntity.name)
+        .limit(1)
         .single();
-      if (ent) {
-        setEntityId(ent.id);
-        return ent.id;
+      if (firstEnt) {
+        setEntityId(firstEnt.id);
+        return firstEnt.id;
       }
     } catch (e) {
       console.error('Failed to resolve entity:', e);
@@ -77,13 +91,11 @@ export function CustomerAutocomplete({ value, onChange, onOpenCreateNew }: Custo
     setLoading(false);
   }, [entityId, resolveEntityId]);
 
-  // Auto-fetch when entity changes
+  // Auto-fetch on mount and when entity changes
   useEffect(() => {
-    if (activeEntity?.name) {
-      resolveEntityId().then(id => {
-        if (id) fetchAllCustomers(id);
-      });
-    }
+    resolveEntityId().then(id => {
+      if (id) fetchAllCustomers(id);
+    });
   }, [activeEntity?.name]);
 
   useEffect(() => {

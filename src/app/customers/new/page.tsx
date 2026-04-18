@@ -62,10 +62,20 @@ function NewCustomerContent() {
 
     try {
       const supabase = createClient();
-      const { data: ent } = await supabase.from('entities').select('id').eq('name', activeEntity.name).single();
+      
+      // Try by name first, fallback to first available entity
+      let ent: { id: string } | null = null;
+      if (activeEntity?.name) {
+        const { data } = await supabase.from('entities').select('id').eq('name', activeEntity.name).single();
+        ent = data;
+      }
+      if (!ent) {
+        const { data } = await supabase.from('entities').select('id').limit(1).single();
+        ent = data;
+      }
       
       if (!ent) {
-        alert('يرجى اختيار الكيان أولاً');
+        alert('يرجى إنشاء كيان (شركة) أولاً من صفحة الإعداد');
         setIsSubmitting(false);
         return;
       }

@@ -21,7 +21,17 @@ function CustomersListContent() {
     try {
       const { createClient } = await import('@/lib/supabase/client');
       const supabase = createClient();
-      const { data: ent } = await supabase.from('entities').select('id').eq('name', activeEntity.name).single();
+      
+      let ent: { id: string } | null = null;
+      if (activeEntity?.name) {
+        const { data } = await supabase.from('entities').select('id').eq('name', activeEntity.name).single();
+        ent = data;
+      }
+      if (!ent) {
+        const { data } = await supabase.from('entities').select('id').limit(1).single();
+        ent = data;
+      }
+      
       if (ent) {
         const data = await getCustomers(ent.id);
         setCustomers(data || []);
@@ -31,11 +41,7 @@ function CustomersListContent() {
   };
 
   useEffect(() => {
-    if (activeEntity.name) {
-      fetchCustomers();
-    } else {
-      setLoading(false);
-    }
+    fetchCustomers();
   }, [activeEntity, searchParams]);
 
 
