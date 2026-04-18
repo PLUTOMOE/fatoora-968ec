@@ -1,9 +1,8 @@
 "use client";
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { Search, Plus, User, Building2, Check, ExternalLink } from 'lucide-react';
 import { useStore } from '@/store/useStore';
-import { getCustomers } from '@/lib/supabase/services';
 import { createClient } from '@/lib/supabase/client';
 
 export interface CustomerData {
@@ -26,6 +25,7 @@ export function CustomerAutocomplete({ value, onChange, onOpenCreateNew }: Custo
   const [customers, setCustomers] = useState<CustomerData[]>([]);
   const [isOpen, setIsOpen] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [entityId, setEntityId] = useState<string | null>(null);
   const wrapperRef = useRef<HTMLDivElement>(null);
 
   // Sync prop value
@@ -33,24 +33,57 @@ export function CustomerAutocomplete({ value, onChange, onOpenCreateNew }: Custo
     setQuery(value);
   }, [value]);
 
-  const fetchAllCustomers = async () => {
-    if (!activeEntity?.name) return;
+  // Resolve entity_id from name (once)
+  const resolveEntityId = useCallback(async () => {
+    if (!activeEntity?.name) return null;
+    try {
+      const supabase = createClient();
+      const { data: ent } = await supabase
+        .from('entities')
+        .select('id')
+        .eq('name', activeEntity.name)
+        .single();
+      if (ent) {
+        setEntityId(ent.id);
+        return ent.id;
+      }
+    } catch (e) {
+      console.error('Failed to resolve entity:', e);
+    }
+    return null;
+  }, [activeEntity?.name]);
+
+  const fetchAllCustomers = useCallback(async (eid?: string | null) => {
+    const id = eid || entityId;
+    if (!id) {
+      // Try to resolve first
+      const resolved = await resolveEntityId();
+      if (!resolved) return;
+      return fetchAllCustomers(resolved);
+    }
     setLoading(true);
     try {
       const supabase = createClient();
-      const { data: ent } = await supabase.from('entities').select('id').eq('name', activeEntity.name).single();
-      if (ent) {
-        const data = await getCustomers(ent.id);
-        setCustomers(data || []);
-      }
+      const { data, error } = await supabase
+        .from('customers')
+        .select('*')
+        .eq('entity_id', id)
+        .order('created_at', { ascending: false });
+      if (error) throw error;
+      setCustomers(data || []);
     } catch (e) {
-      console.error(e);
+      console.error('Failed to fetch customers:', e);
     }
     setLoading(false);
-  };
+  }, [entityId, resolveEntityId]);
 
+  // Auto-fetch when entity changes
   useEffect(() => {
-    fetchAllCustomers();
+    if (activeEntity?.name) {
+      resolveEntityId().then(id => {
+        if (id) fetchAllCustomers(id);
+      });
+    }
   }, [activeEntity?.name]);
 
   useEffect(() => {

@@ -8,6 +8,8 @@ import { ClassicTemplate } from '@/components/invoice-templates/ClassicTemplate'
 import { ModernTemplate } from '@/components/invoice-templates/ModernTemplate';
 import { MinimalTemplate } from '@/components/invoice-templates/MinimalTemplate';
 import { EliteTemplate } from '@/components/invoice-templates/EliteTemplate';
+import { useStore } from '@/store/useStore';
+import { createClient } from '@/lib/supabase/client';
 
 interface InvoiceItem {
   name: string;
@@ -20,7 +22,9 @@ interface InvoiceItem {
 function QuotationFormContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const { activeEntity } = useStore();
   const [showPreview, setShowPreview] = useState(false);
+  const [entityData, setEntityData] = useState<any>(null);
   const [settings, setSettings] = useState<any>({
     template: 'elite',
     logo_url: '',
@@ -35,6 +39,23 @@ function QuotationFormContent() {
   const [items, setItems] = useState<InvoiceItem[]>([
     { name: '', description: '', qty: 1, price: 0, tax_rate: 15 }
   ]);
+
+  // Fetch real entity data from DB
+  useEffect(() => {
+    const fetchEntity = async () => {
+      if (!activeEntity?.name) return;
+      try {
+        const supabase = createClient();
+        const { data } = await supabase
+          .from('entities')
+          .select('*')
+          .eq('name', activeEntity.name)
+          .single();
+        if (data) setEntityData(data);
+      } catch (e) { console.error('Failed to load entity', e); }
+    };
+    fetchEntity();
+  }, [activeEntity?.name]);
 
   useEffect(() => {
     // Load general settings
@@ -94,12 +115,12 @@ function QuotationFormContent() {
 
   const invoiceDataPayload = {
     entity: {
-      name: 'عاصمة المجد للتجارة',
-      address: 'المملكة العربية السعودية، الرياض',
-      phone: '+966 50 000 0000',
-      tax_number: '300123456700003',
-      cr_number: '1010123456',
-      logo_url: settings.logo_url
+      name: entityData?.name || activeEntity?.name || '',
+      address: entityData?.address || '',
+      phone: entityData?.phone || '',
+      tax_number: entityData?.tax_number || '',
+      cr_number: entityData?.cr_number || '',
+      logo_url: entityData?.logo_url || settings.logo_url
     },
     customer: {
       name: customerInfo.name || 'عميل غير محدد',
