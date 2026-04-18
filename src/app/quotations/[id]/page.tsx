@@ -7,6 +7,7 @@ import { StatusPill } from '@/components/ui/StatusPill';
 import { useStore } from '@/store/useStore';
 import { getInvoiceDetails } from '@/lib/supabase/services';
 import { formatCurrency } from '@/lib/format';
+import { ZatcaQRCode } from '@/components/ui/ZatcaQRCode';
 
 export default function QuotationDetail() {
   const router = useRouter();
@@ -133,16 +134,13 @@ export default function QuotationDetail() {
               </div>
             </div>
             <div className="flex justify-end">
-              <div className="text-center">
-                <div className="w-24 h-24 bg-card border border-border rounded p-1.5 mb-1">
-                  <div className="grid grid-cols-12 gap-[1px] w-full h-full">
-                    {Array.from({length: 144}).map((_, i) => (
-                      <div key={i} className={`aspect-square ${Math.random() > 0.5 ? 'bg-primary' : 'bg-card'}`}></div>
-                    ))}
-                  </div>
-                </div>
-                <div className="text-[9px] text-muted-foreground/80">QR Code · ZATCA</div>
-              </div>
+              <ZatcaQRCode 
+                sellerName={activeEntity?.name} 
+                vatNumber={activeEntity?.tax_number}
+                timestamp={invoice.issue_date || new Date().toISOString()}
+                invoiceTotal={invoice.total.toString()}
+                vatTotal={invoice.tax_total.toString()}
+              />
             </div>
           </div>
 

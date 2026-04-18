@@ -1,23 +1,40 @@
-function encodeTag(tag: number, value: string) {
-  const valueBuffer = Buffer.from(value, "utf8");
+export function getZatcaQRCode(
+  sellerName: string,
+  vatNumber: string,
+  timestamp: string,
+  invoiceTotal: string,
+  vatTotal: string
+): string {
+  const encoder = new TextEncoder();
+  
+  const tags = [
+    { tag: 1, value: sellerName || '' },
+    { tag: 2, value: vatNumber || '' },
+    { tag: 3, value: timestamp || '' },
+    { tag: 4, value: invoiceTotal || '' },
+    { tag: 5, value: vatTotal || '' }
+  ];
 
-  return Buffer.concat([Buffer.from([tag, valueBuffer.length]), valueBuffer]);
-}
+  let totalLength = 0;
+  const tagBuffers = tags.map(t => {
+    const valueBuffer = encoder.encode(t.value.toString());
+    totalLength += 2 + valueBuffer.length;
+    return { tag: t.tag, buffer: valueBuffer };
+  });
 
-export function buildZatcaQrPayload(input: {
-  sellerName: string;
-  taxNumber: string;
-  invoiceDate: string;
-  invoiceTotal: number;
-  vatTotal: number;
-}) {
-  const payload = Buffer.concat([
-    encodeTag(1, input.sellerName || "Unknown Seller"),
-    encodeTag(2, input.taxNumber || "000000000000000"),
-    encodeTag(3, input.invoiceDate),
-    encodeTag(4, input.invoiceTotal.toFixed(2)),
-    encodeTag(5, input.vatTotal.toFixed(2)),
-  ]);
+  const finalBuffer = new Uint8Array(totalLength);
+  let offset = 0;
 
-  return payload.toString("base64");
+  for (const t of tagBuffers) {
+    finalBuffer[offset++] = t.tag;
+    finalBuffer[offset++] = t.buffer.length;
+    finalBuffer.set(t.buffer, offset);
+    offset += t.buffer.length;
+  }
+
+  let binary = '';
+  for (let i = 0; i < finalBuffer.length; i++) {
+    binary += String.fromCharCode(finalBuffer[i]);
+  }
+  return btoa(binary);
 }
