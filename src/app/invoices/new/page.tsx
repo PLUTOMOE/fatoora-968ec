@@ -283,8 +283,8 @@ function InvoiceFormContent() {
         }
       }
       
-      // Redirect
-      router.push('/invoices');
+      // Redirect to the newly created invoice detail page
+      router.push(`/invoices/${newInvoice.id}`);
       router.refresh();
       
     } catch (error) {
