@@ -12,6 +12,8 @@ import { MinimalTemplate } from '@/components/invoice-templates/MinimalTemplate'
 import { EliteTemplate } from '@/components/invoice-templates/EliteTemplate';
 import { CorporateTemplate } from '@/components/invoice-templates/CorporateTemplate';
 import { CompactTemplate } from '@/components/invoice-templates/CompactTemplate';
+import { RoyalTemplate } from '@/components/invoice-templates/RoyalTemplate';
+import { ExecutiveTemplate } from '@/components/invoice-templates/ExecutiveTemplate';
 import { useStore } from '@/store/useStore';
 import { createClient } from '@/lib/supabase/client';
 import { getInvoiceDetails } from '@/lib/supabase/services';
@@ -204,6 +206,8 @@ function InvoiceFormContent() {
       case 'elite': return <EliteTemplate {...invoiceDataPayload} />;
       case 'corporate': return <CorporateTemplate {...invoiceDataPayload} />;
       case 'compact': return <CompactTemplate {...invoiceDataPayload} />;
+      case 'royal': return <RoyalTemplate {...invoiceDataPayload} />;
+      case 'executive': return <ExecutiveTemplate {...invoiceDataPayload} />;
       default: return <EliteTemplate {...invoiceDataPayload} />;
     }
   };
@@ -362,6 +366,8 @@ function InvoiceFormContent() {
               <option value="elite">⭐ Elite</option>
               <option value="corporate">🏢 Corporate</option>
               <option value="compact">📋 Compact</option>
+              <option value="royal">👑 Royal</option>
+              <option value="executive">💎 Executive</option>
               <option value="modern">🎨 Modern</option>
               <option value="classic">📄 Classic</option>
               <option value="minimal">✏️ Minimal</option>

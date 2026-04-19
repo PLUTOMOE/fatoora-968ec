@@ -13,6 +13,8 @@ import { MinimalTemplate } from '@/components/invoice-templates/MinimalTemplate'
 import { EliteTemplate } from '@/components/invoice-templates/EliteTemplate';
 import { CorporateTemplate } from '@/components/invoice-templates/CorporateTemplate';
 import { CompactTemplate } from '@/components/invoice-templates/CompactTemplate';
+import { RoyalTemplate } from '@/components/invoice-templates/RoyalTemplate';
+import { ExecutiveTemplate } from '@/components/invoice-templates/ExecutiveTemplate';
 import { createClient } from '@/lib/supabase/client';
 
 export default function QuotationDetail() {
@@ -144,6 +146,8 @@ export default function QuotationDetail() {
       case 'elite': return <EliteTemplate {...templateData} />;
       case 'corporate': return <CorporateTemplate {...templateData} />;
       case 'compact': return <CompactTemplate {...templateData} />;
+      case 'royal': return <RoyalTemplate {...templateData} />;
+      case 'executive': return <ExecutiveTemplate {...templateData} />;
       default: return <EliteTemplate {...templateData} />;
     }
   };

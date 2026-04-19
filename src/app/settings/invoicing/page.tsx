@@ -7,7 +7,7 @@ import {
   ChevronRight, Trash2, Eye
 } from 'lucide-react';
 
-type TemplateType = 'classic' | 'modern' | 'minimal' | 'elite';
+type TemplateType = 'classic' | 'modern' | 'minimal' | 'elite' | 'corporate' | 'compact' | 'royal' | 'executive';
 
 interface InvoiceSettings {
   template: TemplateType;
@@ -19,10 +19,14 @@ interface InvoiceSettings {
 }
 
 const TEMPLATES: { id: TemplateType; name: string; nameAr: string; desc: string; colors: string[] }[] = [
-  { id: 'elite', name: 'Elite', nameAr: 'النخبة (الجديد)', desc: 'تصميم فخم مستوحى من Global Elite لعروض الأسعار', colors: ['#ffffff', '#003dc7', '#f2f3ff'] },
-  { id: 'classic', name: 'Classic', nameAr: 'كلاسيكي', desc: 'تصميم تقليدي احترافي بهيدر أزرق داكن', colors: ['#1a1a2e', '#16213e', '#e2e8f0'] },
-  { id: 'modern', name: 'Modern', nameAr: 'عصري', desc: 'تدرجات لونية مع تصميم حديث', colors: ['#5B5BD6', '#7B7BF6', '#f0f0ff'] },
-  { id: 'minimal', name: 'Minimal', nameAr: 'بسيط', desc: 'أبيض نظيف مع خطوط رفيعة', colors: ['#ffffff', '#f8f8f8', '#e5e5e5'] },
+  { id: 'elite', name: 'Elite', nameAr: '⭐ النخبة', desc: 'تصميم فخم مع هيدر أزرق داكن متدرج', colors: ['#ffffff', '#003dc7', '#f2f3ff'] },
+  { id: 'corporate', name: 'Corporate', nameAr: '🏢 كوربريت', desc: 'تصميم مؤسسي احترافي بأسلوب عصري', colors: ['#1e3a5f', '#2d5a8c', '#f5f5f5'] },
+  { id: 'royal', name: 'Royal', nameAr: '👑 رويال', desc: 'تصميم فاخر داكن مع لمسات ذهبية', colors: ['#0c0c1d', '#daa520', '#1a1a3e'] },
+  { id: 'executive', name: 'Executive', nameAr: '💎 إكزكتيف', desc: 'تصميم عصري نظيف مع أخضر زمردي', colors: ['#047857', '#059669', '#f0fdf4'] },
+  { id: 'compact', name: 'Compact', nameAr: '📋 مدمج', desc: 'تصميم مضغوط ومختصر', colors: ['#374151', '#6B7280', '#f9fafb'] },
+  { id: 'modern', name: 'Modern', nameAr: '🎨 عصري', desc: 'تدرجات لونية مع تصميم حديث', colors: ['#5B5BD6', '#7B7BF6', '#f0f0ff'] },
+  { id: 'classic', name: 'Classic', nameAr: '📄 كلاسيكي', desc: 'تصميم تقليدي احترافي', colors: ['#1a1a2e', '#16213e', '#e2e8f0'] },
+  { id: 'minimal', name: 'Minimal', nameAr: '✏️ بسيط', desc: 'أبيض نظيف مع خطوط رفيعة', colors: ['#ffffff', '#f8f8f8', '#e5e5e5'] },
 ];
 
 export default function InvoicingSettingsPage() {
