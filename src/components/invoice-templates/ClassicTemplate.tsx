@@ -11,21 +11,25 @@ export function ClassicTemplate({ entity, customer, items, invoice, settings, ty
   return (
     <div className="bg-white text-[#1a1a2e] w-full max-w-[800px] mx-auto shadow-lg" dir={isRTL ? 'rtl' : 'ltr'} style={{ fontFamily: 'system-ui, -apple-system, sans-serif' }}>
       {/* Header */}
-      <div className="bg-[#1a1a2e] text-white p-6">
+      <div className="bg-gray-50 text-gray-900 p-6 border-b border-gray-200">
         <div className="flex items-start justify-between">
           <div className="flex items-center gap-4">
-            {entity.logo_url && (
-              <img src={entity.logo_url} alt="Logo" className="w-16 h-16 object-contain rounded-lg bg-white/10 p-1" />
+            {entity.logo_url ? (
+              <img src={entity.logo_url} alt="Logo" className="w-16 h-16 object-contain rounded-lg bg-white p-1 border border-gray-200" />
+            ) : (
+              <div className="w-16 h-16 bg-white rounded-lg flex items-center justify-center border border-gray-200">
+                <span className="text-2xl font-black text-gray-700">{entity.name?.charAt(0)}</span>
+              </div>
             )}
             <div>
-              <h1 className="text-xl font-bold">{entity.name}</h1>
-              {entity.address && <p className="text-white/70 text-sm mt-1">{entity.address}</p>}
-              {entity.phone && <p className="text-white/70 text-sm">{entity.phone}</p>}
+              <h1 className="text-xl font-bold text-gray-900">{entity.name}</h1>
+              {entity.address && <p className="text-gray-500 text-sm mt-1">{entity.address}</p>}
+              {entity.phone && <p className="text-gray-500 text-sm">{entity.phone}</p>}
             </div>
           </div>
           <div className={isRTL ? 'text-left' : 'text-right'}>
-            <div className="text-2xl font-black tracking-tight">{docTitle}</div>
-            <div className="text-white/60 text-sm mt-1">#{invoice.number}</div>
+            <div className="text-2xl font-black tracking-tight text-gray-800 uppercase">{docTitle}</div>
+            <div className="text-gray-500 text-sm mt-1 bg-white px-3 py-1.5 rounded-md inline-block border border-gray-200">#{invoice.number}</div>
           </div>
         </div>
       </div>
@@ -51,7 +55,7 @@ export function ClassicTemplate({ entity, customer, items, invoice, settings, ty
       <div className="px-6">
         <table className="w-full">
           <thead>
-            <tr className="bg-[#16213e] text-white text-sm">
+            <tr className="bg-gray-100 text-gray-700 text-sm">
               <th className={`py-2.5 px-3 font-medium ${isRTL ? 'text-right' : 'text-left'}`}>#</th>
               <th className={`py-2.5 px-3 font-medium ${isRTL ? 'text-right' : 'text-left'}`}>{t.item}</th>
               <th className="text-center py-2.5 px-3 font-medium">{t.qty}</th>

@@ -11,24 +11,25 @@ export function ModernTemplate({ entity, customer, items, invoice, settings, typ
   return (
     <div className="bg-white text-[#1a1a2e] w-full max-w-[800px] mx-auto shadow-lg rounded-xl overflow-hidden" dir={isRTL ? 'rtl' : 'ltr'} style={{ fontFamily: 'system-ui, -apple-system, sans-serif' }}>
       {/* Header */}
-      <div className={`bg-gradient-to-${isRTL ? 'l' : 'r'} from-[#5B5BD6] to-[#7B7BF6] text-white p-6`}>
+      {/* Header */}
+      <div className={`bg-gradient-to-${isRTL ? 'l' : 'r'} from-[#f0f0ff] to-white text-[#5B5BD6] p-6 border-b border-[#e8e8f0]`}>
         <div className="flex items-start justify-between">
           <div className="flex items-center gap-4">
             {entity.logo_url ? (
-              <img src={entity.logo_url} alt="Logo" className="w-14 h-14 object-contain rounded-xl bg-white/20 p-1.5" />
+              <img src={entity.logo_url} alt="Logo" className="w-14 h-14 object-contain rounded-xl bg-white border border-[#e8e8f0] p-1.5 shadow-sm" />
             ) : (
-              <div className="w-14 h-14 rounded-xl bg-white/20 flex items-center justify-center text-xl font-black">
+              <div className="w-14 h-14 rounded-xl bg-white border border-[#e8e8f0] flex items-center justify-center text-xl font-black text-[#5B5BD6] shadow-sm">
                 {entity.name.charAt(0)}
               </div>
             )}
             <div>
-              <h1 className="text-lg font-bold">{entity.name}</h1>
-              {entity.address && <p className="text-white/60 text-sm">{entity.address}</p>}
+              <h1 className="text-lg font-bold text-[#1a1a2e]">{entity.name}</h1>
+              {entity.address && <p className="text-[#585c80] text-sm">{entity.address}</p>}
             </div>
           </div>
           <div className={isRTL ? 'text-left' : 'text-right'}>
-            <div className="text-sm font-medium text-white/60 uppercase tracking-wider">{docTitle}</div>
-            <div className="text-2xl font-black mt-0.5">#{invoice.number}</div>
+            <div className="text-sm font-medium text-[#5B5BD6] uppercase tracking-wider bg-[#5B5BD6]/10 px-3 py-1 inline-block rounded-md">{docTitle}</div>
+            <div className="text-2xl font-black mt-1 text-[#1a1a2e]">#{invoice.number}</div>
           </div>
         </div>
       </div>

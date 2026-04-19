@@ -19,7 +19,13 @@ export function CorporateTemplate({ entity, customer, items, invoice, settings, 
         <div className="flex justify-between items-start">
           <div>
             <div className="flex items-center gap-3 mb-1">
-              {entity.logo_url && <img src={entity.logo_url} alt="Logo" className="max-h-14 object-contain" />}
+              {entity.logo_url ? (
+                <img src={entity.logo_url} alt="Logo" className="max-h-14 object-contain" />
+              ) : (
+                <div className="w-14 h-14 bg-blue-50 rounded-lg flex items-center justify-center border border-blue-100">
+                  <span className="text-xl font-black text-[#0f3460]">{entity.name?.charAt(0)}</span>
+                </div>
+              )}
               <div>
                 <h2 className="text-xl font-bold text-[#0f3460]">{entity.name}</h2>
                 <div className="flex items-center gap-4 mt-1.5 text-xs text-gray-500">

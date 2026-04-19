@@ -11,38 +11,41 @@ export function EliteTemplate({ entity, customer, items, invoice, settings, type
   return (
     <div className="bg-white w-full max-w-[900px] mx-auto" dir={isRTL ? 'rtl' : 'ltr'} style={{ fontFamily: "'Inter', 'Tajawal', system-ui, sans-serif", color: '#1a1d2e' }}>
       
+      {/* Accent Line */}
+      <div className="h-1.5" style={{ background: 'linear-gradient(90deg, #2563eb 0%, #3b82f6 50%, #60a5fa 100%)' }} />
+
       {/* ═══════ HEADER ═══════ */}
-      <div className="relative" style={{ background: 'linear-gradient(135deg, #0a1628 0%, #162544 40%, #1a3a6b 100%)' }}>
-        <div className="relative px-8 py-5">
-          <div className="flex justify-between items-center">
-            {/* Logo & Company */}
-            <div className="flex items-center gap-4">
-              {entity.logo_url ? (
-                <div className="bg-white rounded-xl p-2 shadow-lg" style={{ minWidth: 56 }}>
-                  <img src={entity.logo_url} alt="Logo" className="w-14 h-14 object-contain" />
-                </div>
-              ) : (
-                <div className="w-14 h-14 bg-white/10 rounded-xl flex items-center justify-center border border-white/20">
-                  <span className="text-2xl font-black text-white">{entity.name?.charAt(0)}</span>
-                </div>
-              )}
-              <div>
-                <h2 className="text-base font-bold text-white">{entity.name}</h2>
-                {entity.address && <p className="text-[10px] text-blue-200/70">{entity.address}</p>}
-                <div className="flex items-center gap-2 mt-1">
-                  {entity.cr_number && <span className="text-[9px] bg-white/10 text-blue-100 px-1.5 py-0.5 rounded-full">{t.cr}: {entity.cr_number}</span>}
-                  {entity.tax_number && <span className="text-[9px] bg-white/10 text-blue-100 px-1.5 py-0.5 rounded-full">{t.vat}: {entity.tax_number}</span>}
-                </div>
+      <div className="px-8 pt-6 pb-5 bg-gradient-to-b from-blue-50/80 to-white">
+        <div className="flex justify-between items-start">
+          {/* Logo & Company */}
+          <div className="flex items-center gap-4">
+            {entity.logo_url ? (
+              <div className="bg-white rounded-xl p-2 shadow-sm border border-gray-100" style={{ minWidth: 56 }}>
+                <img src={entity.logo_url} alt="Logo" className="w-14 h-14 object-contain" />
+              </div>
+            ) : (
+              <div className="w-14 h-14 bg-blue-50 rounded-xl flex items-center justify-center border-2 border-blue-100">
+                <span className="text-2xl font-black text-blue-600">{entity.name?.charAt(0)}</span>
+              </div>
+            )}
+            <div>
+              <h2 className="text-lg font-bold text-gray-900">{entity.name}</h2>
+              {entity.address && <p className="text-[10px] text-gray-500 mt-0.5">{entity.address}</p>}
+              <div className="flex items-center gap-2 mt-1.5">
+                {entity.cr_number && <span className="text-[9px] bg-blue-50 text-blue-700 px-2 py-0.5 rounded-full font-medium">{t.cr} {entity.cr_number}</span>}
+                {entity.tax_number && <span className="text-[9px] bg-blue-50 text-blue-700 px-2 py-0.5 rounded-full font-medium">{t.vat} {entity.tax_number}</span>}
               </div>
             </div>
+          </div>
 
-            {/* Document Type & Number */}
-            <div className={`text-${isRTL ? 'left' : 'right'}`}>
-              <h1 className="text-2xl font-black text-white tracking-tight">{titleText}</h1>
-              <div className="bg-white/10 backdrop-blur rounded-lg px-4 py-2 mt-1 border border-white/15">
-                <div className="text-[9px] text-blue-200/60">{t.reference}</div>
-                <div className="text-sm font-bold text-white font-mono">{invoice.number}</div>
-              </div>
+          {/* Document Type & Number */}
+          <div className={`${isRTL ? 'text-left' : 'text-right'}`}>
+            <div className="inline-block px-4 py-1.5 rounded-lg text-white text-lg font-black" style={{ background: 'linear-gradient(135deg, #2563eb 0%, #3b82f6 100%)' }}>
+              {titleText}
+            </div>
+            <div className="bg-gray-50 border border-gray-100 rounded-lg px-4 py-2 mt-2">
+              <div className="text-[9px] text-gray-400 font-bold uppercase">{t.reference}</div>
+              <div className="text-sm font-bold text-gray-900 font-mono">{invoice.number}</div>
             </div>
           </div>
         </div>
@@ -52,18 +55,21 @@ export function EliteTemplate({ entity, customer, items, invoice, settings, type
       <div className="px-8 py-4 border-b border-gray-100">
         <div className="flex justify-between items-start">
           {/* Customer */}
-          <div>
-            <div className="text-[9px] font-bold uppercase tracking-widest text-gray-400 mb-1">{t.preparedFor}</div>
+          <div className="bg-gray-50/80 rounded-lg p-3 flex-1 max-w-[55%]">
+            <div className="text-[9px] font-bold uppercase tracking-widest text-blue-600 mb-1.5 flex items-center gap-1">
+              <div className="w-1.5 h-1.5 rounded-full bg-blue-500" />
+              {t.preparedFor}
+            </div>
             <p className="text-sm font-bold text-gray-800">{customer.name || '—'}</p>
             {customer.address && <p className="text-[11px] text-gray-500">{customer.address}</p>}
             {customer.phone && <p className="text-[11px] text-gray-500">{customer.phone}</p>}
-            {customer.tax_number && <p className="text-[10px] text-gray-500 mt-0.5">{t.vat}: {customer.tax_number}</p>}
+            {customer.tax_number && <p className="text-[10px] text-gray-500 mt-0.5">{t.vat} {customer.tax_number}</p>}
           </div>
           {/* Dates */}
           <div className={`${isRTL ? 'text-left' : 'text-right'}`}>
             <div className="text-[9px] font-bold uppercase tracking-widest text-gray-400 mb-1">{t.details}</div>
-            <div className="text-[11px] text-gray-600"><span className="text-gray-400">{t.dateOfIssue}: </span><span className="font-semibold">{invoice.date}</span></div>
-            {invoice.due_date && <div className="text-[11px] text-gray-600"><span className="text-gray-400">{t.validUntilDue}: </span><span className="font-semibold">{invoice.due_date}</span></div>}
+            <div className="text-[11px] text-gray-600"><span className="text-gray-400">{t.dateOfIssue} </span><span className="font-semibold text-gray-800">{invoice.date}</span></div>
+            {invoice.due_date && <div className="text-[11px] text-gray-600"><span className="text-gray-400">{t.validUntilDue} </span><span className="font-semibold text-gray-800">{invoice.due_date}</span></div>}
           </div>
         </div>
       </div>
@@ -73,12 +79,12 @@ export function EliteTemplate({ entity, customer, items, invoice, settings, type
         <table className="w-full">
           <thead>
             <tr style={{ background: '#f0f4ff' }}>
-              <th className="text-right text-[9px] font-bold uppercase tracking-wider text-gray-500 px-3 py-2 w-8">#</th>
-              <th className="text-right text-[9px] font-bold uppercase tracking-wider text-gray-500 px-3 py-2">{t.description}</th>
-              <th className="text-center text-[9px] font-bold uppercase tracking-wider text-gray-500 px-3 py-2 w-14">{t.qty}</th>
-              <th className="text-center text-[9px] font-bold uppercase tracking-wider text-gray-500 px-3 py-2 w-20">{t.unitPrice}</th>
-              <th className="text-center text-[9px] font-bold uppercase tracking-wider text-gray-500 px-3 py-2 w-14">{t.vatPercent}</th>
-              <th className={`text-[9px] font-bold uppercase tracking-wider text-gray-500 px-3 py-2 w-20 ${isRTL ? 'text-left' : 'text-right'}`}>{t.total}</th>
+              <th className="text-right text-[9px] font-bold uppercase tracking-wider text-blue-700 px-3 py-2.5 w-8 rounded-r-lg">#</th>
+              <th className="text-right text-[9px] font-bold uppercase tracking-wider text-blue-700 px-3 py-2.5">{t.description}</th>
+              <th className="text-center text-[9px] font-bold uppercase tracking-wider text-blue-700 px-3 py-2.5 w-14">{t.qty}</th>
+              <th className="text-center text-[9px] font-bold uppercase tracking-wider text-blue-700 px-3 py-2.5 w-20">{t.unitPrice}</th>
+              <th className="text-center text-[9px] font-bold uppercase tracking-wider text-blue-700 px-3 py-2.5 w-14">{t.vatPercent}</th>
+              <th className={`text-[9px] font-bold uppercase tracking-wider text-blue-700 px-3 py-2.5 w-20 rounded-l-lg ${isRTL ? 'text-left' : 'text-right'}`}>{t.total}</th>
             </tr>
           </thead>
           <tbody>
@@ -86,7 +92,7 @@ export function EliteTemplate({ entity, customer, items, invoice, settings, type
               const lineTotal = item.qty * item.price;
               const lineTax = lineTotal * (item.tax_rate / 100);
               return (
-                <tr key={idx} className="border-b border-gray-50">
+                <tr key={idx} className="border-b border-gray-50 hover:bg-blue-50/30 transition-colors">
                   <td className="px-3 py-2.5 text-[10px] text-gray-300 font-mono">{idx + 1}</td>
                   <td className="px-3 py-2.5 text-[12px] font-semibold text-gray-800">{item.name}</td>
                   <td className="px-3 py-2.5 text-[12px] text-center text-gray-600 tabular-nums">{item.qty}</td>
@@ -104,30 +110,26 @@ export function EliteTemplate({ entity, customer, items, invoice, settings, type
 
       {/* ═══════ TOTALS ═══════ */}
       <div className={`px-8 pb-4 flex ${isRTL ? 'justify-start' : 'justify-end'}`}>
-        <div className="w-64 bg-gray-50 rounded-lg p-4 space-y-1.5">
-          <div className="flex justify-between text-[12px]">
+        <div className="w-72 space-y-1.5">
+          <div className="flex justify-between text-[12px] px-3 py-1">
             <span className="text-gray-500">{t.subtotal}</span>
             <span className="font-medium tabular-nums">{invoice.subtotal.toLocaleString()}</span>
           </div>
           {invoice.discount > 0 && (
-            <div className="flex justify-between text-[12px]">
+            <div className="flex justify-between text-[12px] px-3 py-1">
               <span className="text-red-500">{t.discount}</span>
               <span className="text-red-500 tabular-nums">-{invoice.discount.toLocaleString()}</span>
             </div>
           )}
-          <div className="flex justify-between text-[12px] pb-2 border-b border-gray-200">
+          <div className="flex justify-between text-[12px] px-3 py-1 border-b border-gray-100">
             <span className="text-gray-500">{t.totalVat}</span>
             <span className="font-medium tabular-nums">{invoice.tax.toLocaleString()}</span>
           </div>
-          <div className="flex justify-between items-center pt-1">
-            <span className="text-[10px] font-bold uppercase text-gray-500">{t.grandTotal}</span>
-            <div className={isRTL ? 'text-left' : 'text-right'}>
-              <span className="text-xl font-black tabular-nums" style={{ 
-                background: 'linear-gradient(135deg, #0a1628 0%, #1a3a6b 100%)',
-                WebkitBackgroundClip: 'text',
-                WebkitTextFillColor: 'transparent'
-              }}>{invoice.total.toLocaleString()}</span>
-              <span className="text-[9px] text-gray-400 mr-1">{t.currency}</span>
+          <div className="flex justify-between items-center rounded-xl px-4 py-3" style={{ background: 'linear-gradient(135deg, #2563eb 0%, #3b82f6 100%)' }}>
+            <span className="text-[10px] font-bold uppercase text-blue-100">{t.grandTotal}</span>
+            <div>
+              <span className="text-2xl font-black tabular-nums text-white">{invoice.total.toLocaleString()}</span>
+              <span className="text-[9px] text-blue-200 mr-1">{t.currency}</span>
             </div>
           </div>
         </div>
@@ -172,7 +174,7 @@ export function EliteTemplate({ entity, customer, items, invoice, settings, type
           <span>{invoice.number} · {invoice.date}</span>
         </div>
       </div>
-      <div className="h-1" style={{ background: 'linear-gradient(135deg, #0a1628 0%, #162544 40%, #1a3a6b 100%)' }} />
+      <div className="h-1.5" style={{ background: 'linear-gradient(90deg, #2563eb 0%, #3b82f6 50%, #60a5fa 100%)' }} />
     </div>
   );
 }
