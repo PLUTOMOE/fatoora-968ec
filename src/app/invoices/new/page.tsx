@@ -606,33 +606,32 @@ function InvoiceFormContent() {
         <div className="flex flex-wrap gap-3">
           <button
             type="button"
-            onClick={() => setShowSignature(!showSignature)}
+            onClick={() => settings.signature_url ? setShowSignature(!showSignature) : alert('ارفع التوقيع أولاً من: الإعدادات → إعدادات الفوترة')}
             className={`flex items-center gap-2 px-4 py-2.5 rounded-lg border text-sm font-medium transition-all ${
-              showSignature 
+              showSignature && settings.signature_url
                 ? 'border-primary bg-primary/5 text-primary shadow-sm' 
-                : 'border-border bg-background text-muted-foreground hover:border-primary/30 hover:text-foreground'
+                : settings.signature_url
+                  ? 'border-border bg-background text-muted-foreground hover:border-primary/30 hover:text-foreground'
+                  : 'border-dashed border-border bg-background text-muted-foreground/50 cursor-not-allowed'
             }`}
           >
             <PenTool className="w-4 h-4" />
-            {showSignature ? '✓ تم إضافة التوقيع' : 'إضافة التوقيع'}
+            {showSignature && settings.signature_url ? '✓ التوقيع مفعّل' : settings.signature_url ? 'إضافة التوقيع' : 'لا يوجد توقيع'}
           </button>
           <button
             type="button"
-            onClick={() => setShowStamp(!showStamp)}
+            onClick={() => settings.stamp_url ? setShowStamp(!showStamp) : alert('ارفع الختم أولاً من: الإعدادات → إعدادات الفوترة')}
             className={`flex items-center gap-2 px-4 py-2.5 rounded-lg border text-sm font-medium transition-all ${
-              showStamp 
+              showStamp && settings.stamp_url
                 ? 'border-primary bg-primary/5 text-primary shadow-sm' 
-                : 'border-border bg-background text-muted-foreground hover:border-primary/30 hover:text-foreground'
+                : settings.stamp_url
+                  ? 'border-border bg-background text-muted-foreground hover:border-primary/30 hover:text-foreground'
+                  : 'border-dashed border-border bg-background text-muted-foreground/50 cursor-not-allowed'
             }`}
           >
             <Stamp className="w-4 h-4" />
-            {showStamp ? '✓ تم إضافة الختم' : 'إضافة الختم'}
+            {showStamp && settings.stamp_url ? '✓ الختم مفعّل' : settings.stamp_url ? 'إضافة الختم' : 'لا يوجد ختم'}
           </button>
-          {(!settings.stamp_url && !settings.signature_url) && (
-            <span className="text-[11px] text-muted-foreground/70 self-center mr-2">
-              💡 ارفع التوقيع والختم من الإعدادات أولاً
-            </span>
-          )}
         </div>
 
       </div>

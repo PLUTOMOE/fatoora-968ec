@@ -568,77 +568,31 @@ function QuotationFormContent() {
         <div className="flex flex-wrap gap-3">
           <button
             type="button"
-            onClick={() => {
-              if (settings.signature_url) {
-                setShowSignature(!showSignature);
-              } else {
-                // Direct upload
-                const input = document.createElement('input');
-                input.type = 'file';
-                input.accept = 'image/*';
-                input.onchange = (e: any) => {
-                  const file = e.target.files?.[0];
-                  if (!file) return;
-                  const reader = new FileReader();
-                  reader.onload = (ev) => {
-                    const url = ev.target?.result as string;
-                    setSettings((p: any) => ({ ...p, signature_url: url }));
-                    // Save to localStorage too
-                    const stored = localStorage.getItem('invoice_settings');
-                    const current = stored ? JSON.parse(stored) : {};
-                    localStorage.setItem('invoice_settings', JSON.stringify({ ...current, signature_url: url }));
-                    setShowSignature(true);
-                  };
-                  reader.readAsDataURL(file);
-                };
-                input.click();
-              }
-            }}
+            onClick={() => settings.signature_url ? setShowSignature(!showSignature) : alert('ارفع التوقيع أولاً من: الإعدادات → إعدادات الفوترة')}
             className={`flex items-center gap-2 px-4 py-2.5 rounded-lg border text-sm font-medium transition-all ${
               showSignature && settings.signature_url
                 ? 'border-primary bg-primary/5 text-primary shadow-sm' 
-                : 'border-border bg-background text-muted-foreground hover:border-primary/30 hover:text-foreground'
+                : settings.signature_url
+                  ? 'border-border bg-background text-muted-foreground hover:border-primary/30 hover:text-foreground'
+                  : 'border-dashed border-border bg-background text-muted-foreground/50 cursor-not-allowed'
             }`}
           >
             <PenTool className="w-4 h-4" />
-            {showSignature && settings.signature_url ? '✓ تم إضافة التوقيع' : settings.signature_url ? 'إضافة التوقيع' : '📤 رفع التوقيع'}
+            {showSignature && settings.signature_url ? '✓ التوقيع مفعّل' : settings.signature_url ? 'إضافة التوقيع' : 'لا يوجد توقيع'}
           </button>
           <button
             type="button"
-            onClick={() => {
-              if (settings.stamp_url) {
-                setShowStamp(!showStamp);
-              } else {
-                // Direct upload
-                const input = document.createElement('input');
-                input.type = 'file';
-                input.accept = 'image/*';
-                input.onchange = (e: any) => {
-                  const file = e.target.files?.[0];
-                  if (!file) return;
-                  const reader = new FileReader();
-                  reader.onload = (ev) => {
-                    const url = ev.target?.result as string;
-                    setSettings((p: any) => ({ ...p, stamp_url: url }));
-                    // Save to localStorage too
-                    const stored = localStorage.getItem('invoice_settings');
-                    const current = stored ? JSON.parse(stored) : {};
-                    localStorage.setItem('invoice_settings', JSON.stringify({ ...current, stamp_url: url }));
-                    setShowStamp(true);
-                  };
-                  reader.readAsDataURL(file);
-                };
-                input.click();
-              }
-            }}
+            onClick={() => settings.stamp_url ? setShowStamp(!showStamp) : alert('ارفع الختم أولاً من: الإعدادات → إعدادات الفوترة')}
             className={`flex items-center gap-2 px-4 py-2.5 rounded-lg border text-sm font-medium transition-all ${
               showStamp && settings.stamp_url
                 ? 'border-primary bg-primary/5 text-primary shadow-sm' 
-                : 'border-border bg-background text-muted-foreground hover:border-primary/30 hover:text-foreground'
+                : settings.stamp_url
+                  ? 'border-border bg-background text-muted-foreground hover:border-primary/30 hover:text-foreground'
+                  : 'border-dashed border-border bg-background text-muted-foreground/50 cursor-not-allowed'
             }`}
           >
             <Stamp className="w-4 h-4" />
-            {showStamp && settings.stamp_url ? '✓ تم إضافة الختم' : settings.stamp_url ? 'إضافة الختم' : '📤 رفع الختم'}
+            {showStamp && settings.stamp_url ? '✓ الختم مفعّل' : settings.stamp_url ? 'إضافة الختم' : 'لا يوجد ختم'}
           </button>
         </div>
 
